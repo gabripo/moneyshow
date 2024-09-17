@@ -1,1 +1,2 @@
 stocks_processing/proj_secrets.py
+db.sqlite3
