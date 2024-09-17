@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Stock List</title>
+</head>
+
+<body>
+    <h1>Stock List</h1>
+    <ul>
+        {% for stock in stocks %}
+        <li>{{ stock.name }} ({{ stock.ticker }}): ${{ stock.price }}</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
