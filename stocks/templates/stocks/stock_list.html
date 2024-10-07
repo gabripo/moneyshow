@@ -9,7 +9,7 @@
     <h1>Stock List</h1>
     <ul>
         {% for stock in stocks %}
-        <li>{{ stock.name }} ({{ stock.ticker }}): ${{ stock.price }}</li>
+        <li>{{ stock.name }} ({{ stock.ticker }}): ${{ stock.price }} at time {{ stock.last_time_updated }}</li>
         {% endfor %}
     </ul>
 </body>
