@@ -34,21 +34,11 @@ def get_stock_data(request):
 
         if is_valid_api_data(stock_data):
             if dbToUpdate:
-                query_set_ticker_input = list(filter_stock_in_db(tickerInput))
-                if len(query_set_ticker_input) == 0:
-                    instance = StockData(
-                        ticker=tickerInput, prices=json.dumps(stock_data)
-                    )
-                else:
-                    instance = query_set_ticker_input[0]
-                    instance.ticker = tickerInput
-                    instance.prices = json.dumps(stock_data)
-                instance.save()
+                write_data_to_db(tickerInput, stock_data)
         else:
             stock_data = get_default_stock_data(tickerInput)
 
         return HttpResponse(json.dumps(stock_data), content_type="application/json")
-
     else:
         message = "Not Ajax"
         return HttpResponse(message)
@@ -163,3 +153,14 @@ def get_default_stock_sma(
             "default2": {"SMA": 1},
         }
     return data
+
+
+def write_data_to_db(tickerInput, stockData) -> None:
+    query_set_ticker_input = list(filter_stock_in_db(tickerInput))
+    if len(query_set_ticker_input) == 0:
+        instance = StockData(ticker=tickerInput, prices=json.dumps(stockData))
+    else:
+        instance = query_set_ticker_input[0]
+        instance.ticker = tickerInput
+        instance.prices = json.dumps(stockData)
+    instance.save()
