@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import StockData
 import requests
 import json
+import os
 
 # making possible to load stock prices from the database instead of from the AlphaVantage APIs
 DATABASE_ACCESS = True
@@ -67,18 +68,10 @@ def get_stock_data(request):
             instance.save()
         else:
             # default data
-            output_dictionary["prices"] = {}
-            output_dictionary["prices"]["Meta Data"] = {}
+            output_dictionary["prices"] = get_default_stock_data()
             output_dictionary["prices"]["Meta Data"]["2. Symbol"] = tickerInput
-            output_dictionary["prices"]["Time Series (Daily)"] = {
-                "default1": {"4. close": 1},
-                "default2": {"4. close": 0},
-            }
-            output_dictionary["sma"] = {}
-            output_dictionary["sma"]["Technical Analysis: SMA"] = {
-                "default1": {"SMA": 2},
-                "default2": {"SMA": 1},
-            }
+            output_dictionary["sma"] = get_default_stock_sma()
+
         # return the data back to the frontend AJAX call
         return HttpResponse(
             json.dumps(output_dictionary), content_type="application/json"
@@ -103,3 +96,36 @@ def is_valid_api_data(stock_data) -> bool:
     return ("Time Series (Daily)" in stock_data) or (
         "Technical Analysis: SMA" in stock_data
     )
+
+
+def get_default_stock_data(
+    default_file="stock_prices.json", default_folder="stocks_show/dummies"
+) -> dict:
+    fullpath = os.path.join(os.getcwd(), default_folder, default_file)
+    if os.path.isfile(fullpath):
+        with open(fullpath, "r") as file:
+            data = json.load(file)
+    else:
+        # fallback to simple data
+        data["Meta Data"] = {}
+        data["Time Series (Daily)"] = {
+            "default1": {"4. close": 1},
+            "default2": {"4. close": 0},
+        }
+    return data
+
+
+def get_default_stock_sma(
+    default_file="stock_sma.json", default_folder="stocks_show/dummies"
+) -> dict:
+    fullpath = os.path.join(os.getcwd(), default_folder, default_file)
+    if os.path.isfile(fullpath):
+        with open(fullpath, "r") as file:
+            data = json.load(file)
+    else:
+        # fallback to simple data
+        data["Technical Analysis: SMA"] = {
+            "default1": {"SMA": 2},
+            "default2": {"SMA": 1},
+        }
+    return data
