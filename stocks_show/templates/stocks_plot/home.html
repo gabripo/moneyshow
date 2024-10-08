@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--<link rel="stylesheet" href="style.css">-->
+    <!-- load Chart.js library for data visualization-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- load jQuery library for common frontend tasks-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <title>Stock Visualizer</title>
+</head>
+
+<body>
+    <h2>Interative Stock Visualizer</h2>
+    <br>
+
+    <!-- input field for the ticker -->
+    <label for="ticker-input">Enter Symbol:</label>
+    <input type="text" id="ticker-input">
+    <!-- submit button for the input field -->
+    <input type="button" value="submit" id="submit-btn">
+    <br>
+
+    <!-- canvas over which Chart.js will generate the plot -->
+    <div id="graph-area">
+        <h2>Plot</h2>
+        <canvas id="greatChart"></canvas>
+    </div>
+    <br>
+
+    <script>
+        $(document).ready(function () {
+            // Right after the page is loaded, we get the stock data (default to GOOG) from the Django backend (the 'get_stock_data' function) for plotting
+            $.ajax({
+                type: "POST",
+                url: "/get_stock_data/",
+                data: {
+                    'ticker': 'GOOG',
+                },
+                success: function (res, status) {
+                    // GOOG's stock price and SMA data is now in the "res" object
+                    var n_latest_days = 500;
+                    var tickerDisplay = res['prices']['Meta Data']['2. Symbol']; // fetch data (ticker) from res object
+                    var graphTitle = tickerDisplay + ' (data for the trailing ' + n_latest_days + ' trading days)'
+
+                    var priceSeries = res['prices']['Time Series (Daily)']; // fetch data (stock prices) from res object
+                    var daily_adjusted_close = [];
+                    var dates = [];
+
+                    price_data_parse = function () {
+                        for (let key in priceSeries) {
+                            daily_adjusted_close.push(Number(priceSeries[key]['5. adjusted close']));
+                            dates.push(String(key));
+                        }
+
+                    };
+                    price_data_parse(); // populate the daily_adjusted_close and dates objects
+
+                    var smaSeries = res['sma']['Technical Analysis: SMA']; // fetch data (simple moving average) from res object
+                    var sma_data = [];
+
+                    sma_data_parse = function () {
+                        for (let key in smaSeries) {
+                            sma_data.push(Number(smaSeries[key]['SMA']));
+                        }
+
+                    };
+                    sma_data_parse(); // populate the sma_data object
+
+
+                    // only keep the latest n_latest_days data points (i.e., data for the latest n_latest_days trading days) for the three lists below
+                    daily_adjusted_close.reverse().slice(n_latest_days);
+                    sma_data.reverse().slice(n_latest_days);
+                    dates.reverse().slice(n_latest_days);
+
+                    //instruct Chart.js to plot the graph, with "dates" as the x-axis labels and "daily_adjusted_close" and "sma_data" as the y-axis values
+                    var ctx = document.getElementById('greatChart');//.getContext('2d');
+                    var greatChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: dates.slice(-n_latest_days),
+                            datasets: [
+                                {
+                                    label: 'Daily Adjusted Close',
+                                    data: daily_adjusted_close.slice(-n_latest_days),
+                                    backgroundColor: [
+                                        'green',
+                                    ],
+                                    borderColor: [
+                                        'green',
+                                    ],
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Simple Moving Average (SMA)',
+                                    data: sma_data.slice(-n_latest_days),
+                                    backgroundColor: [
+                                        'blue',
+                                    ],
+                                    borderColor: [
+                                        'blue',
+                                    ],
+                                    borderWidth: 1
+                                },
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    //beginAtZero: false
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: graphTitle
+                                }
+                            }
+                        }
+                    });
+
+                }
+            });
+        });
+
+        $('#submit-btn').click(function () {
+            var n_latest_days = 500;
+            // when the user specifies a new ticker, we call the Django backend (the 'get_stock_data' function) to get the stock data and refresh the graph. 
+            var tickerText = $('#ticker-input').val(); // obtain the ticker string from the input textbox
+            $.ajax({
+                type: "POST",
+                url: "/get_stock_data/",
+                data: {
+                    'ticker': tickerText,
+                },
+                success: function (res, status) {
+                    // stock price and SMA data for the user-specified ticker is now in the "res" object
+                    var tickerDisplay = res['prices']['Meta Data']['2. Symbol'];
+                    var graphTitle = tickerDisplay + ' (data for the trailing ' + n_latest_days + ' trading days)'
+
+                    var priceSeries = res['prices']['Time Series (Daily)'];
+                    var daily_adjusted_close = [];
+                    var dates = [];
+
+                    price_data_parse = function () {
+                        for (let key in priceSeries) {
+                            daily_adjusted_close.push(Number(priceSeries[key]['5. adjusted close']));
+                            dates.push(String(key));
+                        }
+
+                    };
+                    price_data_parse();
+
+                    var smaSeries = res['sma']['Technical Analysis: SMA'];
+                    var sma_data = [];
+
+                    sma_data_parse = function () {
+                        for (let key in smaSeries) {
+                            sma_data.push(Number(smaSeries[key]['SMA']));
+                        }
+
+                    };
+                    sma_data_parse();
+
+
+                    // only keep the latest n_latest_days data points (i.e., data for the latest n_latest_days trading days) for the three lists below
+                    daily_adjusted_close.reverse().slice(n_latest_days);
+                    sma_data.reverse().slice(n_latest_days);
+                    dates.reverse().slice(n_latest_days);
+
+                    //instruct Chart.js to plot the graph, with "dates" as the x-axis labels and "daily_adjusted_close" and "sma_data" as the y-axis values
+                    $('#greatChart').remove(); // remove the canvas of the old plot
+                    $('#graph-area').append('<canvas id="greatChart"><canvas>'); // add the canvas of the new plot
+                    var ctx = document.getElementById('greatChart').getContext('2d');
+                    var greatChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: dates.slice(-n_latest_days),
+                            datasets: [
+                                {
+                                    label: 'Daily Adjusted Close',
+                                    data: daily_adjusted_close.slice(-n_latest_days),
+                                    backgroundColor: [
+                                        'green',
+                                    ],
+                                    borderColor: [
+                                        'green',
+                                    ],
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Simple Moving Average (SMA)',
+                                    data: sma_data.slice(-n_latest_days),
+                                    backgroundColor: [
+                                        'blue',
+                                    ],
+                                    borderColor: [
+                                        'blue',
+                                    ],
+                                    borderWidth: 1
+                                },
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    //beginAtZero: false
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: graphTitle
+                                }
+                            }
+                        }
+                    });
+
+                }
+            });
+
+
+        });
+
+    </script>
+
+</body>
+
+</html>

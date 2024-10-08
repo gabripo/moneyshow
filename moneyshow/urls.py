@@ -20,5 +20,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path(route="", view=include("stocks.urls")),  # initial page
+    path(route="", view=include("stocks_show.urls")),  # initial page
 ]
