@@ -7,7 +7,7 @@ import requests
 import json
 
 # making possible to load stock prices from the database instead of from the AlphaVantage APIs
-DATABASE_ACCESS = False
+DATABASE_ACCESS = True
 
 
 # Create your views here.
@@ -51,9 +51,11 @@ def get_stock_data(request):
         output_dictionary["prices"] = price_series
         output_dictionary["sma"] = sma_series
 
-        # save the dictionary to database
-        temp = StockData(ticker=tickerInput, prices=json.dumps(output_dictionary))
-        temp.save()
+        # overwrite already available stock in the database
+        instance = StockData.objects.get(id=1)
+        instance.ticker = tickerInput
+        instance.prices = json.dumps(output_dictionary)
+        instance.save()
 
         # return the data back to the frontend AJAX call
         return HttpResponse(
