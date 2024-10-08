@@ -27,7 +27,7 @@ def get_stock_data(request):
         tickerInput = get_ticker_from_request(request)
         dbToUpdate = db_to_update(request, DATABASE_ACCESS)
 
-        if DATABASE_ACCESS and StockData.objects.filter(ticker=tickerInput).exists():
+        if DATABASE_ACCESS and is_stock_in_db(tickerInput):
             entry_loaded = get_stock_from_db(tickerInput)
             price_series = entry_loaded["prices"]
             sma_series = entry_loaded["sma"]
@@ -45,9 +45,7 @@ def get_stock_data(request):
 
         if is_valid_api_data(output_dictionary):
             if dbToUpdate:
-                query_set_ticker_input = list(
-                    StockData.objects.filter(ticker=tickerInput)
-                )
+                query_set_ticker_input = list(filter_stock_in_db(tickerInput))
                 if len(query_set_ticker_input) == 0:
                     instance = StockData(
                         ticker=tickerInput, prices=json.dumps(output_dictionary)
@@ -91,11 +89,21 @@ def db_to_update(request, useDatabase=True) -> bool:
     return False
 
 
+def filter_stock_in_db(tickerInput):
+    return StockData.objects.filter(ticker=tickerInput)
+
+
+def is_stock_in_db(tickerInput) -> bool:
+    filteredDb = filter_stock_in_db(tickerInput)
+    return filteredDb.exists()
+
+
 def get_stock_from_db(tickerInput) -> dict:
     """
     Django's way of saying SELECT * FROM StockData WHERE ticker = tickerInput
     """
-    entry = StockData.objects.filter(ticker=tickerInput)[0]
+    filteredDb = filter_stock_in_db()
+    entry = filteredDb[0]
     if len(entry) == 0:
         return {}
     entry_loaded = json.loads(entry.prices)
