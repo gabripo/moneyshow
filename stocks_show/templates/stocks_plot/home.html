@@ -21,6 +21,7 @@
     <!-- submit button for the input field -->
     <input type="button" value="submit" id="submit-btn">
     <br>
+    <input type="checkbox" id="update_db_checkbox" value="update_db_values"> Update database values
 
     <!-- canvas over which Chart.js will generate the plot -->
     <div id="graph-area">
@@ -36,7 +37,7 @@
                 type: "POST",
                 url: "/get_stock_data/",
                 data: {
-                    'ticker': 'GOOG',
+                    'ticker': 'GOOG'
                 },
                 success: function (res, status) {
                     // GOOG's stock price and SMA data is now in the "res" object
@@ -131,12 +132,15 @@
         $('#submit-btn').click(function () {
             var n_latest_days = 500;
             // when the user specifies a new ticker, we call the Django backend (the 'get_stock_data' function) to get the stock data and refresh the graph. 
-            var tickerText = $('#ticker-input').val(); // obtain the ticker string from the input textbox
+            var tickerText = $('#ticker-input').val(); // obtain the ticker string from the input textbox, requires jQuery
+            var checkboxVal = $('#update_db_checkbox').is(':checked') ? $('#update_db_checkbox').val() : 'load_db_values';
+            ;
             $.ajax({
                 type: "POST",
                 url: "/get_stock_data/",
                 data: {
                     'ticker': tickerText,
+                    'update': checkboxVal,
                 },
                 success: function (res, status) {
                     // stock price and SMA data for the user-specified ticker is now in the "res" object

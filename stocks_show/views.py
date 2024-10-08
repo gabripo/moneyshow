@@ -25,17 +25,12 @@ def get_stock_data(request):
     """
     if is_ajax(request):
         tickerInput = get_ticker_from_request(request)
+        dbToUpdate = db_to_update(request, DATABASE_ACCESS)
 
-        if (
-            DATABASE_ACCESS == True
-            and StockData.objects.filter(ticker=tickerInput).exists()
-        ):  # Django's way of saying SELECT * FROM StockData WHERE ticker = tickerInput
-            # We have the data in our database! Get the data from the database directly and send it back to the frontend AJAX call
-            entry = StockData.objects.filter(ticker=tickerInput)[0]
-            entry_loaded = json.loads(entry.prices)
+        if DATABASE_ACCESS and StockData.objects.filter(ticker=tickerInput).exists():
+            entry_loaded = get_stock_from_db(tickerInput)
             price_series = entry_loaded["prices"]
             sma_series = entry_loaded["sma"]
-            # return HttpResponse(entry.prices, content_type="application/json")
         else:
             price_series = requests.get(
                 f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={tickerInput}&apikey={ALPHA_ADVANTAGE_API_KEY}&outputsize=full"
@@ -48,27 +43,25 @@ def get_stock_data(request):
         output_dictionary["prices"] = price_series
         output_dictionary["sma"] = sma_series
 
-        if is_valid_api_data(output_dictionary["prices"]) and is_valid_api_data(
-            output_dictionary["sma"]
-        ):
-            # overwrite already available stock in the database
-            query_set_ticker_input = list(StockData.objects.filter(ticker=tickerInput))
-            if len(query_set_ticker_input) == 0:
-                instance = StockData(
-                    ticker=tickerInput, prices=json.dumps(output_dictionary)
+        if is_valid_api_data(output_dictionary):
+            if dbToUpdate:
+                query_set_ticker_input = list(
+                    StockData.objects.filter(ticker=tickerInput)
                 )
-            else:
-                instance = query_set_ticker_input[0]
-                instance.ticker = tickerInput
-                instance.prices = json.dumps(output_dictionary)
-            instance.save()
+                if len(query_set_ticker_input) == 0:
+                    instance = StockData(
+                        ticker=tickerInput, prices=json.dumps(output_dictionary)
+                    )
+                else:
+                    instance = query_set_ticker_input[0]
+                    instance.ticker = tickerInput
+                    instance.prices = json.dumps(output_dictionary)
+                instance.save()
         else:
-            # default data
             output_dictionary["prices"] = get_default_stock_data()
             output_dictionary["prices"]["Meta Data"]["2. Symbol"] = tickerInput
             output_dictionary["sma"] = get_default_stock_sma()
 
-        # return the data back to the frontend AJAX call
         return HttpResponse(
             json.dumps(output_dictionary), content_type="application/json"
         )
@@ -85,25 +78,47 @@ def is_ajax(request) -> bool:
     return request.headers.get("x-requested-with") == "XMLHttpRequest"
 
 
-def get_ticker_from_request(request, ticker_name="ticker") -> str:
-    tickerInput = request.POST.get(ticker_name, "null")
+def get_ticker_from_request(request, tickerFieldName="ticker") -> str:
+    tickerInput = request.POST.get(tickerFieldName, "null")
     tickerInput = tickerInput.upper()
     return tickerInput
 
 
-def is_valid_api_data(stock_data) -> bool:
+def db_to_update(request, useDatabase=True) -> bool:
+    updateDbInput = request.POST.get("update", "nothing")
+    if useDatabase and updateDbInput == "update_db_values":
+        return True
+    return False
+
+
+def get_stock_from_db(tickerInput) -> dict:
     """
-    function to check wether fetched API data is ok to be used
+    Django's way of saying SELECT * FROM StockData WHERE ticker = tickerInput
     """
-    return ("Time Series (Daily)" in stock_data) or (
-        "Technical Analysis: SMA" in stock_data
-    )
+    entry = StockData.objects.filter(ticker=tickerInput)[0]
+    if len(entry) == 0:
+        return {}
+    entry_loaded = json.loads(entry.prices)
+    return entry_loaded
+
+
+def is_valid_api_data(stockData, groups=["prices", "sma"]) -> bool:
+    """
+    function to check whether fetched API data is ok to be used
+    """
+    validApi = False
+    for group in groups:
+        if group == "prices":
+            validApi &= "Time Series (Daily)" in stockData
+        elif group == "sma":
+            validApi &= "Technical Analysis: SMA" in stockData
+    return validApi
 
 
 def get_default_stock_data(
-    default_file="stock_prices.json", default_folder="stocks_show/dummies"
+    defaultFile="stock_prices.json", defaultFolder="stocks_show/dummies"
 ) -> dict:
-    fullpath = os.path.join(os.getcwd(), default_folder, default_file)
+    fullpath = os.path.join(os.getcwd(), defaultFolder, defaultFile)
     if os.path.isfile(fullpath):
         with open(fullpath, "r") as file:
             data = json.load(file)
@@ -118,9 +133,9 @@ def get_default_stock_data(
 
 
 def get_default_stock_sma(
-    default_file="stock_sma.json", default_folder="stocks_show/dummies"
+    defaultFile="stock_sma.json", defaultFolder="stocks_show/dummies"
 ) -> dict:
-    fullpath = os.path.join(os.getcwd(), default_folder, default_file)
+    fullpath = os.path.join(os.getcwd(), defaultFolder, defaultFile)
     if os.path.isfile(fullpath):
         with open(fullpath, "r") as file:
             data = json.load(file)
