@@ -26,6 +26,7 @@ def get_stock_data(request):
         tickerInput = request.POST.get(
             "ticker", "null"
         )  # get ticker from the AJAX POST request
+        # TODO add option to fetch data from the database or update existing one
         tickerInput = tickerInput.upper()
 
         if DATABASE_ACCESS == True:
@@ -40,23 +41,45 @@ def get_stock_data(request):
         # get adjusted close data from Alpha Vantage APIs , parse data into a JSON dictionary
         price_series = requests.get(
             f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={tickerInput}&apikey={ALPHA_ADVANTAGE_API_KEY}&outputsize=full"
-        ).json()
+        )
 
         # get SMA (simple moving average) data from Alpha Vantage APIs , parse data into a JSON dictionary
         sma_series = requests.get(
             f"https://www.alphavantage.co/query?function=SMA&symbol={tickerInput}&interval=daily&time_period=10&series_type=close&apikey={ALPHA_ADVANTAGE_API_KEY}"
-        ).json()
+        )
 
         output_dictionary = {}
-        output_dictionary["prices"] = price_series
-        output_dictionary["sma"] = sma_series
+        output_dictionary["prices"] = price_series.json()
+        output_dictionary["sma"] = sma_series.json()
 
-        # overwrite already available stock in the database
-        instance = StockData.objects.get(id=1)
-        instance.ticker = tickerInput
-        instance.prices = json.dumps(output_dictionary)
-        instance.save()
-
+        if is_valid_api_data(output_dictionary["prices"]) and is_valid_api_data(
+            output_dictionary["sma"]
+        ):
+            # overwrite already available stock in the database
+            query_set_ticker_input = list(StockData.objects.filter(ticker=tickerInput))
+            if len(query_set_ticker_input) == 0:
+                instance = StockData(
+                    ticker=tickerInput, prices=json.dumps(output_dictionary)
+                )
+            else:
+                instance = query_set_ticker_input[0]
+                instance.ticker = tickerInput
+                instance.prices = json.dumps(output_dictionary)
+            instance.save()
+        else:
+            # default data
+            output_dictionary["prices"] = {}
+            output_dictionary["prices"]["Meta Data"] = {}
+            output_dictionary["prices"]["Meta Data"]["2. Symbol"] = tickerInput
+            output_dictionary["prices"]["Time Series (Daily)"] = {
+                "default1": {"4. close": 1},
+                "default2": {"4. close": 0},
+            }
+            output_dictionary["sma"] = {}
+            output_dictionary["sma"]["Technical Analysis: SMA"] = {
+                "default1": {"SMA": 2},
+                "default2": {"SMA": 1},
+            }
         # return the data back to the frontend AJAX call
         return HttpResponse(
             json.dumps(output_dictionary), content_type="application/json"
@@ -67,8 +90,17 @@ def get_stock_data(request):
         return HttpResponse(message)
 
 
-def is_ajax(request):
+def is_ajax(request) -> bool:
     """
     function to ensure that a request is an AJAX POST request from the frontend
     """
     return request.headers.get("x-requested-with") == "XMLHttpRequest"
+
+
+def is_valid_api_data(stock_data) -> bool:
+    """
+    function to check wether fetched API data is ok to be used
+    """
+    return ("Time Series (Daily)" in stock_data) or (
+        "Technical Analysis: SMA" in stock_data
+    )
