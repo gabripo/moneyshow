@@ -28,17 +28,17 @@ def get_stock_data(request):
         dbToUpdate = db_to_update(request, DATABASE_ACCESS)
 
         if DATABASE_ACCESS and is_stock_in_db(tickerInput):
-            stock_data = get_stock_from_db(tickerInput)
+            stockData = get_stock_from_db(tickerInput)
         else:
-            stock_data = get_stock_from_api(tickerInput, "alphavantage")
+            stockData = get_stock_from_api(tickerInput, "alphavantage")
 
-        if is_valid_api_data(stock_data):
+        if is_valid_api_data(stockData):
             if dbToUpdate:
-                write_data_to_db(tickerInput, stock_data)
+                write_data_to_db(tickerInput, stockData)
         else:
-            stock_data = get_default_stock_data(tickerInput)
+            stockData = get_default_stock_data(tickerInput)
 
-        return HttpResponse(json.dumps(stock_data), content_type="application/json")
+        return HttpResponse(json.dumps(stockData), content_type="application/json")
     else:
         message = "Not Ajax"
         return HttpResponse(message)
@@ -86,18 +86,18 @@ def get_stock_from_db(tickerInput) -> dict:
 
 
 def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
-    stock_data = {}
+    stockData = {}
     if apiName == "alphavantage":
-        stock_data["prices"] = requests.get(
+        stockData["prices"] = requests.get(
             f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={tickerInput}&apikey={ALPHA_ADVANTAGE_API_KEY}&outputsize=full"
         ).json()
-        stock_data["sma"] = requests.get(
+        stockData["sma"] = requests.get(
             f"https://www.alphavantage.co/query?function=SMA&symbol={tickerInput}&interval=daily&time_period=10&series_type=close&apikey={ALPHA_ADVANTAGE_API_KEY}"
         ).json()
     else:
         # TODO add more APIs
-        stock_data = get_default_stock_data(tickerInput)
-    return stock_data
+        stockData = get_default_stock_data(tickerInput)
+    return stockData
 
 
 def is_valid_api_data(stockData, groups=["prices", "sma"]) -> bool:
@@ -114,12 +114,12 @@ def is_valid_api_data(stockData, groups=["prices", "sma"]) -> bool:
 
 
 def get_default_stock_data(tickerInput):
-    stock_data = {}
-    stock_data["prices"] = get_default_stock_data_prices()
-    stock_data["prices"]["Meta Data"]["2. Symbol"] = tickerInput
-    stock_data["sma"] = get_default_stock_sma()
-    stock_data["sma"]["Meta Data"]["2. Symbol"] = tickerInput
-    return stock_data
+    stockData = {}
+    stockData["prices"] = get_default_stock_data_prices()
+    stockData["prices"]["Meta Data"]["2. Symbol"] = tickerInput
+    stockData["sma"] = get_default_stock_sma()
+    stockData["sma"]["Meta Data"]["2. Symbol"] = tickerInput
+    return stockData
 
 
 def get_default_stock_data_prices(
