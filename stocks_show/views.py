@@ -28,41 +28,26 @@ def get_stock_data(request):
         dbToUpdate = db_to_update(request, DATABASE_ACCESS)
 
         if DATABASE_ACCESS and is_stock_in_db(tickerInput):
-            entry_loaded = get_stock_from_db(tickerInput)
-            price_series = entry_loaded["prices"]
-            sma_series = entry_loaded["sma"]
+            stock_data = get_stock_from_db(tickerInput)
         else:
-            price_series = requests.get(
-                f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={tickerInput}&apikey={ALPHA_ADVANTAGE_API_KEY}&outputsize=full"
-            ).json()
-            sma_series = requests.get(
-                f"https://www.alphavantage.co/query?function=SMA&symbol={tickerInput}&interval=daily&time_period=10&series_type=close&apikey={ALPHA_ADVANTAGE_API_KEY}"
-            ).json()
+            stock_data = get_stock_from_api(tickerInput, "alphavantage")
 
-        output_dictionary = {}
-        output_dictionary["prices"] = price_series
-        output_dictionary["sma"] = sma_series
-
-        if is_valid_api_data(output_dictionary):
+        if is_valid_api_data(stock_data):
             if dbToUpdate:
                 query_set_ticker_input = list(filter_stock_in_db(tickerInput))
                 if len(query_set_ticker_input) == 0:
                     instance = StockData(
-                        ticker=tickerInput, prices=json.dumps(output_dictionary)
+                        ticker=tickerInput, prices=json.dumps(stock_data)
                     )
                 else:
                     instance = query_set_ticker_input[0]
                     instance.ticker = tickerInput
-                    instance.prices = json.dumps(output_dictionary)
+                    instance.prices = json.dumps(stock_data)
                 instance.save()
         else:
-            output_dictionary["prices"] = get_default_stock_data()
-            output_dictionary["prices"]["Meta Data"]["2. Symbol"] = tickerInput
-            output_dictionary["sma"] = get_default_stock_sma()
+            stock_data = get_default_stock_data(tickerInput)
 
-        return HttpResponse(
-            json.dumps(output_dictionary), content_type="application/json"
-        )
+        return HttpResponse(json.dumps(stock_data), content_type="application/json")
 
     else:
         message = "Not Ajax"
@@ -110,6 +95,21 @@ def get_stock_from_db(tickerInput) -> dict:
     return entry_loaded
 
 
+def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
+    stock_data = {}
+    if apiName == "alphavantage":
+        stock_data["prices"] = requests.get(
+            f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={tickerInput}&apikey={ALPHA_ADVANTAGE_API_KEY}&outputsize=full"
+        ).json()
+        stock_data["sma"] = requests.get(
+            f"https://www.alphavantage.co/query?function=SMA&symbol={tickerInput}&interval=daily&time_period=10&series_type=close&apikey={ALPHA_ADVANTAGE_API_KEY}"
+        ).json()
+    else:
+        # TODO add more APIs
+        stock_data = get_default_stock_data(tickerInput)
+    return stock_data
+
+
 def is_valid_api_data(stockData, groups=["prices", "sma"]) -> bool:
     """
     function to check whether fetched API data is ok to be used
@@ -123,7 +123,16 @@ def is_valid_api_data(stockData, groups=["prices", "sma"]) -> bool:
     return validApi
 
 
-def get_default_stock_data(
+def get_default_stock_data(tickerInput):
+    stock_data = {}
+    stock_data["prices"] = get_default_stock_data_prices()
+    stock_data["prices"]["Meta Data"]["2. Symbol"] = tickerInput
+    stock_data["sma"] = get_default_stock_sma()
+    stock_data["sma"]["Meta Data"]["2. Symbol"] = tickerInput
+    return stock_data
+
+
+def get_default_stock_data_prices(
     defaultFile="stock_prices.json", defaultFolder="stocks_show/dummies"
 ) -> dict:
     fullpath = os.path.join(os.getcwd(), defaultFolder, defaultFile)
