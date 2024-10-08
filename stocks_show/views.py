@@ -29,28 +29,27 @@ def get_stock_data(request):
         # TODO add option to fetch data from the database or update existing one
         tickerInput = tickerInput.upper()
 
-        if DATABASE_ACCESS == True:
-            # checking if the database already has data stored for this ticker before querying the Alpha Vantage API
-            if StockData.objects.filter(
-                ticker=tickerInput
-            ).exists():  # Django's way of saying SELECT * FROM StockData WHERE ticker = tickerInput
-                # We have the data in our database! Get the data from the database directly and send it back to the frontend AJAX call
-                entry = StockData.objects.filter(ticker=tickerInput)[0]
-                return HttpResponse(entry.prices, content_type="application/json")
-
-        # get adjusted close data from Alpha Vantage APIs , parse data into a JSON dictionary
-        price_series = requests.get(
-            f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={tickerInput}&apikey={ALPHA_ADVANTAGE_API_KEY}&outputsize=full"
-        )
-
-        # get SMA (simple moving average) data from Alpha Vantage APIs , parse data into a JSON dictionary
-        sma_series = requests.get(
-            f"https://www.alphavantage.co/query?function=SMA&symbol={tickerInput}&interval=daily&time_period=10&series_type=close&apikey={ALPHA_ADVANTAGE_API_KEY}"
-        )
+        if (
+            DATABASE_ACCESS == True
+            and StockData.objects.filter(ticker=tickerInput).exists()
+        ):  # Django's way of saying SELECT * FROM StockData WHERE ticker = tickerInput
+            # We have the data in our database! Get the data from the database directly and send it back to the frontend AJAX call
+            entry = StockData.objects.filter(ticker=tickerInput)[0]
+            entry_loaded = json.loads(entry.prices)
+            price_series = entry_loaded["prices"]
+            sma_series = entry_loaded["sma"]
+            # return HttpResponse(entry.prices, content_type="application/json")
+        else:
+            price_series = requests.get(
+                f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={tickerInput}&apikey={ALPHA_ADVANTAGE_API_KEY}&outputsize=full"
+            ).json()
+            sma_series = requests.get(
+                f"https://www.alphavantage.co/query?function=SMA&symbol={tickerInput}&interval=daily&time_period=10&series_type=close&apikey={ALPHA_ADVANTAGE_API_KEY}"
+            ).json()
 
         output_dictionary = {}
-        output_dictionary["prices"] = price_series.json()
-        output_dictionary["sma"] = sma_series.json()
+        output_dictionary["prices"] = price_series
+        output_dictionary["sma"] = sma_series
 
         if is_valid_api_data(output_dictionary["prices"]) and is_valid_api_data(
             output_dictionary["sma"]
