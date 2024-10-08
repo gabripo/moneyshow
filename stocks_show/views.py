@@ -39,7 +39,7 @@ def get_stock_data(request):
 
         # get adjusted close data from Alpha Vantage APIs , parse data into a JSON dictionary
         price_series = requests.get(
-            f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={tickerInput}&apikey={ALPHA_ADVANTAGE_API_KEY}&outputsize=full"
+            f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={tickerInput}&apikey={ALPHA_ADVANTAGE_API_KEY}&outputsize=full"
         ).json()
 
         # get SMA (simple moving average) data from Alpha Vantage APIs , parse data into a JSON dictionary
