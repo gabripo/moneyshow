@@ -24,11 +24,7 @@ def get_stock_data(request):
     - returns a JSON dictionary of stock data back to the AJAX loop
     """
     if is_ajax(request):
-        tickerInput = request.POST.get(
-            "ticker", "null"
-        )  # get ticker from the AJAX POST request
-        # TODO add option to fetch data from the database or update existing one
-        tickerInput = tickerInput.upper()
+        tickerInput = get_ticker_from_request(request)
 
         if (
             DATABASE_ACCESS == True
@@ -87,6 +83,12 @@ def is_ajax(request) -> bool:
     function to ensure that a request is an AJAX POST request from the frontend
     """
     return request.headers.get("x-requested-with") == "XMLHttpRequest"
+
+
+def get_ticker_from_request(request, ticker_name="ticker") -> str:
+    tickerInput = request.POST.get(ticker_name, "null")
+    tickerInput = tickerInput.upper()
+    return tickerInput
 
 
 def is_valid_api_data(stock_data) -> bool:
