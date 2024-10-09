@@ -1,7 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from stocks_show.libs.ajax_parser import db_to_update, get_ticker_from_request, is_ajax
+from stocks_show.libs.ajax_parser import (
+    db_to_update,
+    get_ticker_from_request,
+    is_ajax,
+    get_api_name_from_request,
+)
 from stocks_show.libs.api_handler import get_stock_from_api, is_valid_api_data
 from stocks_show.libs.database_handling import (
     get_stock_from_db,
@@ -30,11 +35,12 @@ def get_stock_data(request):
     if is_ajax(request):
         tickerInput = get_ticker_from_request(request)
         dbToUpdate = db_to_update(request, DATABASE_ACCESS)
+        apiName = get_api_name_from_request(request)
 
         if DATABASE_ACCESS and is_stock_in_db(tickerInput) and not dbToUpdate:
             stockData = get_stock_from_db(tickerInput)
         else:
-            stockData = get_stock_from_api(tickerInput, "alphavantage")
+            stockData = get_stock_from_api(tickerInput, apiName)
             if not is_valid_api_data(stockData):
                 print("Fall back to stock data, as data invalid from the APIs...")
                 stockData = get_default_stock_data(tickerInput)

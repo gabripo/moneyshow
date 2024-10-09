@@ -16,3 +16,8 @@ def db_to_update(request, useDatabase=True) -> bool:
     if useDatabase and updateDbInput == "update_db_values":
         return True
     return False
+
+
+def get_api_name_from_request(request) -> str:
+    apiName = request.POST.get("api", "database")
+    return apiName
