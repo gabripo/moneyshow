@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from stocks_processing.parse_secrets import ALPHA_ADVANTAGE_API_KEY
 from django.views.decorators.csrf import csrf_exempt
+from stocks_show.libs.ajax_parser import db_to_update, get_ticker_from_request, is_ajax
 from stocks_show.libs.database_handling import (
     get_stock_from_db,
     is_stock_in_db,
@@ -45,26 +46,6 @@ def get_stock_data(request):
     else:
         message = "Not Ajax"
         return HttpResponse(message)
-
-
-def is_ajax(request) -> bool:
-    """
-    function to ensure that a request is an AJAX POST request from the frontend
-    """
-    return request.headers.get("x-requested-with") == "XMLHttpRequest"
-
-
-def get_ticker_from_request(request, tickerFieldName="ticker") -> str:
-    tickerInput = request.POST.get(tickerFieldName, "null")
-    tickerInput = tickerInput.upper()
-    return tickerInput
-
-
-def db_to_update(request, useDatabase=True) -> bool:
-    updateDbInput = request.POST.get("update", "nothing")
-    if useDatabase and updateDbInput == "update_db_values":
-        return True
-    return False
 
 
 def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
