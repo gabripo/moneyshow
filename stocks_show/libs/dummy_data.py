@@ -4,10 +4,9 @@ import json
 
 def get_default_stock_data(tickerInput):
     stockData = {}
+    stockData["ticker"] = tickerInput
     stockData["prices"] = get_default_stock_data_prices()
-    stockData["prices"]["Meta Data"]["2. Symbol"] = tickerInput
     stockData["sma"] = get_default_stock_sma()
-    stockData["sma"]["Meta Data"]["2. Symbol"] = tickerInput
     return stockData
 
 
@@ -17,11 +16,11 @@ def get_default_stock_data_prices(
     fullpath = os.path.join(os.getcwd(), defaultFolder, defaultFile)
     if os.path.isfile(fullpath):
         with open(fullpath, "r") as file:
-            data = json.load(file)
+            dataFromFile = json.load(file)
+            data = dataFromFile["Time Series (Daily)"]
     else:
         # fallback to simple data
-        data["Meta Data"] = {}
-        data["Time Series (Daily)"] = {
+        data = {
             "default1": {"4. close": 1},
             "default2": {"4. close": 0},
         }
@@ -34,10 +33,11 @@ def get_default_stock_sma(
     fullpath = os.path.join(os.getcwd(), defaultFolder, defaultFile)
     if os.path.isfile(fullpath):
         with open(fullpath, "r") as file:
-            data = json.load(file)
+            dataFromFile = json.load(file)
+            data = dataFromFile["Technical Analysis: SMA"]
     else:
         # fallback to simple data
-        data["Technical Analysis: SMA"] = {
+        data = {
             "default1": {"SMA": 2},
             "default2": {"SMA": 1},
         }

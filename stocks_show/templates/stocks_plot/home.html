@@ -49,10 +49,10 @@
                 success: function (res, status) {
                     // GOOG's stock price and SMA data is now in the "res" object
                     var n_latest_days = 500;
-                    var tickerDisplay = res['prices']['Meta Data']['2. Symbol']; // fetch data (ticker) from res object
+                    var tickerDisplay = res['ticker']; // fetch data (ticker) from res object
                     var graphTitle = tickerDisplay + ' (data for the trailing ' + n_latest_days + ' trading days)'
 
-                    var priceSeries = res['prices']['Time Series (Daily)']; // fetch data (stock prices) from res object
+                    var priceSeries = res['prices']; // fetch data (stock prices) from res object
                     var daily_adjusted_close = [];
                     var dates = [];
 
@@ -65,7 +65,7 @@
                     };
                     price_data_parse(); // populate the daily_adjusted_close and dates objects
 
-                    var smaSeries = res['sma']['Technical Analysis: SMA']; // fetch data (simple moving average) from res object
+                    var smaSeries = res['sma']; // fetch data (simple moving average) from res object
                     var sma_data = [];
 
                     sma_data_parse = function () {
@@ -153,10 +153,10 @@
                 },
                 success: function (res, status) {
                     // stock price and SMA data for the user-specified ticker is now in the "res" object
-                    var tickerDisplay = res['prices']['Meta Data']['2. Symbol'];
+                    var tickerDisplay = res['ticker'];
                     var graphTitle = tickerDisplay + ' (data for the trailing ' + n_latest_days + ' trading days)'
 
-                    var priceSeries = res['prices']['Time Series (Daily)'];
+                    var priceSeries = res['prices'];
                     var daily_adjusted_close = [];
                     var dates = [];
 
@@ -169,7 +169,7 @@
                     };
                     price_data_parse();
 
-                    var smaSeries = res['sma']['Technical Analysis: SMA'];
+                    var smaSeries = res['sma'];
                     var sma_data = [];
 
                     sma_data_parse = function () {
