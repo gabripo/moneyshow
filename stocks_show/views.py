@@ -36,6 +36,7 @@ def get_stock_data(request):
             if dbToUpdate:
                 write_data_to_db(tickerInput, stockData)
         else:
+            print("Fall back to stock data, as data invalid from the APIs...")
             stockData = get_default_stock_data(tickerInput)
 
         return HttpResponse(json.dumps(stockData), content_type="application/json")
