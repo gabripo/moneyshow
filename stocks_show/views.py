@@ -107,9 +107,9 @@ def is_valid_api_data(stockData, groups=["prices", "sma"]) -> bool:
     validApi = False
     for group in groups:
         if group == "prices":
-            validApi &= "Time Series (Daily)" in stockData
+            validApi |= "Time Series (Daily)" in stockData[group]
         elif group == "sma":
-            validApi &= "Technical Analysis: SMA" in stockData
+            validApi |= "Technical Analysis: SMA" in stockData[group]
     return validApi
 
 
