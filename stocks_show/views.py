@@ -27,17 +27,15 @@ def get_stock_data(request):
         tickerInput = get_ticker_from_request(request)
         dbToUpdate = db_to_update(request, DATABASE_ACCESS)
 
-        if DATABASE_ACCESS and is_stock_in_db(tickerInput):
+        if DATABASE_ACCESS and is_stock_in_db(tickerInput) and not dbToUpdate:
             stockData = get_stock_from_db(tickerInput)
         else:
             stockData = get_stock_from_api(tickerInput, "alphavantage")
-
-        if is_valid_api_data(stockData):
-            if dbToUpdate:
+            if not is_valid_api_data(stockData):
+                print("Fall back to stock data, as data invalid from the APIs...")
+                stockData = get_default_stock_data(tickerInput)
+            elif not is_stock_in_db(tickerInput) or dbToUpdate:
                 write_data_to_db(tickerInput, stockData)
-        else:
-            print("Fall back to stock data, as data invalid from the APIs...")
-            stockData = get_default_stock_data(tickerInput)
 
         return HttpResponse(json.dumps(stockData), content_type="application/json")
     else:
