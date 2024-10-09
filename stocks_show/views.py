@@ -2,7 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from stocks_processing.parse_secrets import ALPHA_ADVANTAGE_API_KEY
 from django.views.decorators.csrf import csrf_exempt
-from .models import StockData
+from stocks_show.libs.database_handling import (
+    get_stock_from_db,
+    is_stock_in_db,
+    write_data_to_db,
+)
 import requests
 import json
 import os
@@ -61,27 +65,6 @@ def db_to_update(request, useDatabase=True) -> bool:
     if useDatabase and updateDbInput == "update_db_values":
         return True
     return False
-
-
-def filter_stock_in_db(tickerInput):
-    return StockData.objects.filter(ticker=tickerInput)
-
-
-def is_stock_in_db(tickerInput) -> bool:
-    filteredDb = filter_stock_in_db(tickerInput)
-    return filteredDb.exists()
-
-
-def get_stock_from_db(tickerInput) -> dict:
-    """
-    Django's way of saying SELECT * FROM StockData WHERE ticker = tickerInput
-    """
-    filteredDb = filter_stock_in_db(tickerInput)
-    entry = filteredDb[0]
-    if not entry:
-        return {}
-    entry_loaded = json.loads(entry.prices)
-    return entry_loaded
 
 
 def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
@@ -152,14 +135,3 @@ def get_default_stock_sma(
             "default2": {"SMA": 1},
         }
     return data
-
-
-def write_data_to_db(tickerInput, stockData) -> None:
-    query_set_ticker_input = list(filter_stock_in_db(tickerInput))
-    if len(query_set_ticker_input) == 0:
-        instance = StockData(ticker=tickerInput, prices=json.dumps(stockData))
-    else:
-        instance = query_set_ticker_input[0]
-        instance.ticker = tickerInput
-        instance.prices = json.dumps(stockData)
-    instance.save()
