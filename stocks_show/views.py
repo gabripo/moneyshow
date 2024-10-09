@@ -77,9 +77,9 @@ def get_stock_from_db(tickerInput) -> dict:
     """
     Django's way of saying SELECT * FROM StockData WHERE ticker = tickerInput
     """
-    filteredDb = filter_stock_in_db()
+    filteredDb = filter_stock_in_db(tickerInput)
     entry = filteredDb[0]
-    if len(entry) == 0:
+    if not entry:
         return {}
     entry_loaded = json.loads(entry.prices)
     return entry_loaded
