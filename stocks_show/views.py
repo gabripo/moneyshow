@@ -1,15 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from stocks_processing.parse_secrets import ALPHA_ADVANTAGE_API_KEY
 from django.views.decorators.csrf import csrf_exempt
 from stocks_show.libs.ajax_parser import db_to_update, get_ticker_from_request, is_ajax
+from stocks_show.libs.api_handler import get_stock_from_api, is_valid_api_data
 from stocks_show.libs.database_handling import (
     get_stock_from_db,
     is_stock_in_db,
     write_data_to_db,
 )
 from stocks_show.libs.dummy_data import get_default_stock_data
-import requests
 import json
 
 # making possible to load stock prices from the database instead of from the AlphaVantage APIs
@@ -46,31 +45,3 @@ def get_stock_data(request):
     else:
         message = "Not Ajax"
         return HttpResponse(message)
-
-
-def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
-    stockData = {}
-    if apiName == "alphavantage":
-        stockData["prices"] = requests.get(
-            f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={tickerInput}&apikey={ALPHA_ADVANTAGE_API_KEY}&outputsize=full"
-        ).json()
-        stockData["sma"] = requests.get(
-            f"https://www.alphavantage.co/query?function=SMA&symbol={tickerInput}&interval=daily&time_period=10&series_type=close&apikey={ALPHA_ADVANTAGE_API_KEY}"
-        ).json()
-    else:
-        # TODO add more APIs
-        stockData = get_default_stock_data(tickerInput)
-    return stockData
-
-
-def is_valid_api_data(stockData, groups=["prices", "sma"]) -> bool:
-    """
-    function to check whether fetched API data is ok to be used
-    """
-    validApi = False
-    for group in groups:
-        if group == "prices":
-            validApi |= "Time Series (Daily)" in stockData[group]
-        elif group == "sma":
-            validApi |= "Technical Analysis: SMA" in stockData[group]
-    return validApi
