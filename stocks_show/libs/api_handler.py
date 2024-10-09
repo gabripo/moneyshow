@@ -8,15 +8,15 @@ def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
     if apiName == "alphavantage":
         stockData["ticker"] = tickerInput
 
-        stockDataDaily = requests.get(
-            f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={tickerInput}&apikey={ALPHA_ADVANTAGE_API_KEY}&outputsize=full"
-        ).json()
+        stockDataDaily = api_alphavantage_call(
+            tickerInput, ALPHA_ADVANTAGE_API_KEY, "TIME_SERIES_DAILY"
+        )
         if "Time Series (Daily)" in stockDataDaily:
             stockData["prices"] = stockDataDaily["Time Series (Daily)"]
 
-        stockDataSMA = requests.get(
-            f"https://www.alphavantage.co/query?function=SMA&symbol={tickerInput}&interval=daily&time_period=10&series_type=close&apikey={ALPHA_ADVANTAGE_API_KEY}"
-        ).json()
+        stockDataSMA = api_alphavantage_call(
+            tickerInput, ALPHA_ADVANTAGE_API_KEY, "SMA"
+        )
         if "Technical Analysis: SMA" in stockDataSMA:
             stockData["sma"] = stockDataSMA["Technical Analysis: SMA"]
     else:
@@ -33,3 +33,8 @@ def is_valid_api_data(stockData, groups=["prices", "sma"]) -> bool:
     for group in groups:
         validApi |= (group in stockData) and (len(stockData[group]) != 0)
     return validApi
+
+
+def api_alphavantage_call(tickerInput, apiKey, dataType="TIME_SERIES_DAILY"):
+    query = f"https://www.alphavantage.co/query?function={dataType}&symbol={tickerInput}&apikey={apiKey}"
+    return requests.get(query).json()
