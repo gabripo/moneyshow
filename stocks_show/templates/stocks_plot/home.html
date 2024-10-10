@@ -16,6 +16,8 @@
     <!-- load script with financial data plotter (LOCAL FILE NEEDED!)-->
     <script src="{% static 'chartjs-chart-financial.js' %}"></script>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <!-- zooming in plots -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1"></script>
 
     <title>Stock Visualizer</title>
 </head>
@@ -120,6 +122,22 @@
                             title: {
                                 display: true,
                                 text: graphTitle
+                            },
+                            zoom: {
+                                pan: {
+                                    enabled: true,
+                                    mode: 'xy'
+                                },
+                                zoom: {
+                                    enabled: true,
+                                    mode: 'xy',
+                                    drag: {
+                                        enabled: true,
+                                        borderColor: 'rgba(0, 0, 0, 0.5)',
+                                        borderWidth: 1,
+                                        backgroundColor: 'rgba(225,225,225,0.3)'
+                                    }
+                                }
                             }
                         },
                         scales: {
@@ -231,6 +249,22 @@
                             title: {
                                 display: true,
                                 text: graphTitle
+                            },
+                            zoom: {
+                                pan: {
+                                    enabled: true,
+                                    mode: 'xy'
+                                },
+                                zoom: {
+                                    enabled: true,
+                                    mode: 'xy',
+                                    drag: {
+                                        enabled: true,
+                                        borderColor: 'rgba(0, 0, 0, 0.5)',
+                                        borderWidth: 1,
+                                        backgroundColor: 'rgba(225,225,225,0.3)'
+                                    }
+                                }
                             }
                         },
                         scales: {
