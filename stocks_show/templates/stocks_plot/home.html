@@ -65,21 +65,8 @@
                     };
                     price_data_parse(); // populate the daily_adjusted_close and dates objects
 
-                    var smaSeries = res['sma']; // fetch data (simple moving average) from res object
-                    var sma_data = [];
-
-                    sma_data_parse = function () {
-                        for (let key in smaSeries) {
-                            sma_data.push(Number(smaSeries[key]));
-                        }
-
-                    };
-                    sma_data_parse(); // populate the sma_data object
-
-
                     // only keep the latest n_latest_days data points (i.e., data for the latest n_latest_days trading days) for the three lists below
                     daily_adjusted_close.reverse().slice(n_latest_days);
-                    sma_data.reverse().slice(n_latest_days);
                     dates.reverse().slice(n_latest_days);
 
                     //instruct Chart.js to plot the graph, with "dates" as the x-axis labels and "daily_adjusted_close" and "sma_data" as the y-axis values
@@ -99,18 +86,7 @@
                                         'green',
                                     ],
                                     borderWidth: 1
-                                },
-                                {
-                                    label: 'Simple Moving Average (SMA)',
-                                    data: sma_data.slice(-n_latest_days),
-                                    backgroundColor: [
-                                        'blue',
-                                    ],
-                                    borderColor: [
-                                        'blue',
-                                    ],
-                                    borderWidth: 1
-                                },
+                                }
                             ]
                         },
                         options: {
@@ -169,21 +145,8 @@
                     };
                     price_data_parse();
 
-                    var smaSeries = res['sma'];
-                    var sma_data = [];
-
-                    sma_data_parse = function () {
-                        for (let key in smaSeries) {
-                            sma_data.push(Number(smaSeries[key]));
-                        }
-
-                    };
-                    sma_data_parse();
-
-
                     // only keep the latest n_latest_days data points (i.e., data for the latest n_latest_days trading days) for the three lists below
                     daily_adjusted_close.reverse().slice(n_latest_days);
-                    sma_data.reverse().slice(n_latest_days);
                     dates.reverse().slice(n_latest_days);
 
                     //instruct Chart.js to plot the graph, with "dates" as the x-axis labels and "daily_adjusted_close" and "sma_data" as the y-axis values
@@ -205,18 +168,7 @@
                                         'green',
                                     ],
                                     borderWidth: 1
-                                },
-                                {
-                                    label: 'Simple Moving Average (SMA)',
-                                    data: sma_data.slice(-n_latest_days),
-                                    backgroundColor: [
-                                        'blue',
-                                    ],
-                                    borderColor: [
-                                        'blue',
-                                    ],
-                                    borderWidth: 1
-                                },
+                                }
                             ]
                         },
                         options: {

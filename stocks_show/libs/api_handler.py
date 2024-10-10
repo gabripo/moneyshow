@@ -59,10 +59,6 @@ def get_stock_timeseries_alphavantage(
         data["volume"] = get_stock_timeseries_element_alphavantage(
             stockDataAlphavantage, parentCategory, "5. volume"
         )
-    elif parentCategory == "Technical Analysis: SMA":
-        data = get_stock_timeseries_element_alphavantage(
-            stockDataAlphavantage, parentCategory, "SMA"
-        )
     return data
 
 
