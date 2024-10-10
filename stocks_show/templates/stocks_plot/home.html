@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <!-- zooming in plots -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1"></script>
+    <!-- AJAX-related functions -->
+    <script src="{% static 'ajax_interface.js' %}"></script>
 
     <title>Stock Visualizer</title>
 </head>
@@ -49,123 +51,15 @@
     <br>
 
     <script>
+
         $(document).ready(function () {
             // Right after the page is loaded, we get the stock data (default to GOOG) from the Django backend (the 'get_stock_data' function) for plotting
-            $.ajax({
-                type: "POST",
-                url: "/get_stock_data/",
-                data: {
-                    'ticker': 'GOOG'
-                },
-                success: function (res, status) {
-                    // GOOG's stock price and SMA data is now in the "res" object
-                    var tickerDisplay = res['ticker']; // fetch data (ticker) from res object
-                    var graphTitle = tickerDisplay
+            var tickerText = 'GOOG'; // obtain the ticker string from the input textbox, requires jQuery
+            var checkboxVal = '';
+            var apiProvider = 'database';
 
-                    var priceSeries = res['prices']; // fetch data (stock prices) from res object
-                    var graphTitle = tickerDisplay
+            ajax_call(tickerText, checkboxVal, apiProvider);
 
-                    const priceSeriesFormatted = priceSeries.map(
-                        ({ date, open, high, low, close }) =>
-                        ({
-                            x: new Date(date).getTime(),
-                            o: open,
-                            h: high,
-                            l: low,
-                            c: close
-                        })
-                    );
-
-                    const closeDataFormatted = priceSeries.map(
-                        ({ date, close }) =>
-                        ({
-                            x: new Date(date).getTime(),
-                            y: close
-                        })
-                    )
-
-                    const dataToPlot = {
-                        datasets: [{
-                            label: 'OHLC for symbol ' + tickerDisplay,
-                            data: priceSeriesFormatted
-                        },
-                        {
-                            label: 'Close price',
-                            type: 'line',
-                            data: closeDataFormatted,
-                            borderColor: 'red',
-                            hidden: true,
-                        }]
-                    }
-
-                    const options = {
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: graphTitle
-                            },
-                            tooltip: {
-                                enabled: true,
-                                mode: 'nearest',
-                                intersect: false,
-                                callbacks: {
-                                    label: function (context) {
-                                        const point = context.raw;
-                                        return [
-                                            `Open: ${point.o}`,
-                                            `High: ${point.h}`,
-                                            `Low: ${point.l}`,
-                                            `Close: ${point.c}`
-                                        ];
-                                    }
-                                }
-                            },
-                            zoom: {
-                                pan: {
-                                    enabled: true,
-                                    mode: 'xy'
-                                },
-                                zoom: {
-                                    enabled: true,
-                                    mode: 'xy',
-                                    drag: {
-                                        enabled: true,
-                                        borderColor: 'rgba(0, 0, 0, 0.5)',
-                                        borderWidth: 1,
-                                        backgroundColor: 'rgba(225,225,225,0.3)'
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'day',
-                                    displayFormats: {
-                                        day: 'D'
-                                    },
-                                },
-                            },
-                            y: {
-                                beginAtZero: false
-                            }
-                        }
-                    };
-
-                    const ctx = document.getElementById('greatChart').getContext('2d');
-                    new Chart(ctx, {
-                        type: 'candlestick',
-                        data: dataToPlot,
-                        options: options
-                    });
-
-                }
-            });
         });
 
         $('#submit-btn').click(function () {
@@ -173,125 +67,8 @@
             var tickerText = $('#ticker-input').val(); // obtain the ticker string from the input textbox, requires jQuery
             var checkboxVal = $('#update_db_checkbox').is(':checked') ? $('#update_db_checkbox').val() : 'load_db_values';
             var apiProvider = $("#selection").val();
-            ;
-            $.ajax({
-                type: "POST",
-                url: "/get_stock_data/",
-                data: {
-                    'ticker': tickerText,
-                    'update': checkboxVal,
-                    'api': apiProvider,
-                },
-                success: function (res, status) {
-                    // stock price and SMA data for the user-specified ticker is now in the "res" object
-                    var tickerDisplay = res['ticker'];
-                    var priceSeries = res['prices'];
-                    var graphTitle = tickerDisplay
 
-                    $('#greatChart').remove(); // remove the canvas of the old plot
-                    $('#graph-area').append('<canvas id="greatChart"><canvas>'); // add the canvas of the new plot
-                    const priceSeriesFormatted = priceSeries.map(
-                        ({ date, open, high, low, close }) =>
-                        ({
-                            x: new Date(date).getTime(),
-                            o: open,
-                            h: high,
-                            l: low,
-                            c: close
-                        })
-                    );
-
-                    const closeDataFormatted = priceSeries.map(
-                        ({ date, close }) =>
-                        ({
-                            x: new Date(date).getTime(),
-                            y: close
-                        })
-                    )
-
-                    const dataToPlot = {
-                        datasets: [{
-                            label: 'OHLC for symbol ' + tickerDisplay,
-                            data: priceSeriesFormatted
-                        },
-                        {
-                            label: 'Close price',
-                            type: 'line',
-                            data: closeDataFormatted,
-                            borderColor: 'red',
-                            hidden: true,
-                        }]
-                    }
-
-                    const options = {
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: graphTitle
-                            },
-                            tooltip: {
-                                enabled: true,
-                                mode: 'nearest',
-                                intersect: false,
-                                callbacks: {
-                                    label: function (context) {
-                                        const point = context.raw;
-                                        return [
-                                            `Open: ${point.o}`,
-                                            `High: ${point.h}`,
-                                            `Low: ${point.l}`,
-                                            `Close: ${point.c}`
-                                        ];
-                                    }
-                                }
-                            },
-                            zoom: {
-                                pan: {
-                                    enabled: true,
-                                    mode: 'xy'
-                                },
-                                zoom: {
-                                    enabled: true,
-                                    mode: 'xy',
-                                    drag: {
-                                        enabled: true,
-                                        borderColor: 'rgba(0, 0, 0, 0.5)',
-                                        borderWidth: 1,
-                                        backgroundColor: 'rgba(225,225,225,0.3)'
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'day',
-                                    displayFormats: {
-                                        day: 'D'
-                                    },
-                                },
-                            },
-                            y: {
-                                beginAtZero: false
-                            }
-                        }
-                    };
-
-                    const ctx = document.getElementById('greatChart').getContext('2d');
-                    new Chart(ctx, {
-                        type: 'candlestick',
-                        data: dataToPlot,
-                        options: options
-                    });
-
-                }
-            });
-
+            ajax_call(tickerText, checkboxVal, apiProvider);
 
         });
 
