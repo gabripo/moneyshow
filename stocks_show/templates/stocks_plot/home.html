@@ -36,12 +36,23 @@
     <br>
     <input type="checkbox" id="update_db_checkbox" value="update_db_values"> Update database values
     </br>
-    <label for="selection">API provider:</label>
-    <select name="selection" id="selection">
+    </br>
+    <label for="selection_api">API provider:</label>
+    <select name="selection_api" id="selection_api">
         <option value="alphavantage">Alpha Vantage</option>
         <option value="option2">Option 2</option>
         <option value="option3">Option 3</option>
     </select>
+    </br>
+    </br>
+    <label for="selection_api">Regressor:</label>
+    <select name="selection_ml" id="selection_ml">
+        <option value="linear">Linear Regression</option>
+        <option value="decisiontree">Decision Tree Regression</option>
+        <option value="randomforest">Random Forest</option>
+        <option value="xgboost">XGBoost</option>
+    </select>
+    <input type="button" value="predict" id="predict-btn">
 
     <!-- canvas over which Chart.js will generate the plot -->
     <div id="graph-area">
@@ -59,17 +70,19 @@
             var apiProvider = 'database';
 
             ajax_call(tickerText, checkboxVal, apiProvider);
-
         });
 
         $('#submit-btn').click(function () {
             // when the user specifies a new ticker, we call the Django backend (the 'get_stock_data' function) to get the stock data and refresh the graph. 
             var tickerText = $('#ticker-input').val(); // obtain the ticker string from the input textbox, requires jQuery
             var checkboxVal = $('#update_db_checkbox').is(':checked') ? $('#update_db_checkbox').val() : 'load_db_values';
-            var apiProvider = $("#selection").val();
+            var apiProvider = $("#selection_api").val();
 
             ajax_call(tickerText, checkboxVal, apiProvider);
+        });
 
+        $('#predict-btn').click(function () {
+            // TODO invoke backend and use ML magic
         });
 
     </script>
