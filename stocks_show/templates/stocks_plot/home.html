@@ -57,9 +57,10 @@
                     var dates = [];
 
                     price_data_parse = function () {
-                        for (let key in priceSeries['close']) {
-                            daily_adjusted_close.push(Number(priceSeries['close'][key]));
-                            dates.push(String(key));
+                        for (let key in priceSeries) {
+                            console.log('key ${key}')
+                            daily_adjusted_close.push(Number(priceSeries[key]['close']));
+                            dates.push(String(priceSeries[key]['date']));
                         }
 
                     };
