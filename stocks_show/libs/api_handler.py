@@ -1,5 +1,5 @@
 import requests
-from stocks_processing.parse_secrets import ALPHA_ADVANTAGE_API_KEY
+from stocks_show.libs.parse_secrets import ALPHA_ADVANTAGE_API_KEY
 
 
 def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
