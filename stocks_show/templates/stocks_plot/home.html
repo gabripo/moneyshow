@@ -62,7 +62,6 @@
                             daily_adjusted_close.push(Number(priceSeries[key]['close']));
                             dates.push(String(priceSeries[key]['date']));
                         }
-
                     };
                     price_data_parse(); // populate the daily_adjusted_close and dates objects
 
@@ -138,13 +137,13 @@
                     var dates = [];
 
                     price_data_parse = function () {
-                        for (let key in priceSeries['close']) {
-                            daily_adjusted_close.push(Number(priceSeries['close'][key]));
-                            dates.push(String(key));
+                        for (let key in priceSeries) {
+                            console.log('key ${key}')
+                            daily_adjusted_close.push(Number(priceSeries[key]['close']));
+                            dates.push(String(priceSeries[key]['date']));
                         }
-
                     };
-                    price_data_parse();
+                    price_data_parse(); // populate the daily_adjusted_close and dates objects
 
                     // only keep the latest n_latest_days data points (i.e., data for the latest n_latest_days trading days) for the three lists below
                     daily_adjusted_close.reverse().slice(n_latest_days);
