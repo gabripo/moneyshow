@@ -78,43 +78,53 @@
                     daily_adjusted_close.reverse().slice(n_latest_days);
                     dates.reverse().slice(n_latest_days);
 
-                    //instruct Chart.js to plot the graph, with "dates" as the x-axis labels and "daily_adjusted_close" and "sma_data" as the y-axis values
-                    var ctx = document.getElementById('greatChart');//.getContext('2d');
-                    var greatChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: dates.slice(-n_latest_days),
-                            datasets: [
-                                {
-                                    label: 'Daily Adjusted Close',
-                                    data: daily_adjusted_close.slice(-n_latest_days),
-                                    backgroundColor: [
-                                        'green',
-                                    ],
-                                    borderColor: [
-                                        'green',
-                                    ],
-                                    borderWidth: 1
-                                }
-                            ]
+                    const priceSeriesFormatted = priceSeries.map(
+                        ({ date, open, high, low, close }) =>
+                        ({
+                            x: new Date(date).getTime(),
+                            o: open,
+                            h: high,
+                            l: low,
+                            c: close
+                        })
+                    );
+
+                    const dataToPlot = {
+                        datasets: [{
+                            label: 'OHLC for symbol ' + tickerDisplay,
+                            data: priceSeriesFormatted
+                        }]
+                    }
+
+                    const options = {
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: graphTitle
+                            }
                         },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: {
-                                    //beginAtZero: false
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day'
                                 }
                             },
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: graphTitle
-                                }
+                            y: {
+                                beginAtZero: false
                             }
                         }
+                    };
+
+                    const ctx = document.getElementById('greatChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'candlestick',
+                        data: dataToPlot,
+                        options: options
                     });
 
                 }
@@ -161,42 +171,53 @@
                     //instruct Chart.js to plot the graph, with "dates" as the x-axis labels and "daily_adjusted_close" and "sma_data" as the y-axis values
                     $('#greatChart').remove(); // remove the canvas of the old plot
                     $('#graph-area').append('<canvas id="greatChart"><canvas>'); // add the canvas of the new plot
-                    var ctx = document.getElementById('greatChart').getContext('2d');
-                    var greatChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: dates.slice(-n_latest_days),
-                            datasets: [
-                                {
-                                    label: 'Daily Adjusted Close',
-                                    data: daily_adjusted_close.slice(-n_latest_days),
-                                    backgroundColor: [
-                                        'green',
-                                    ],
-                                    borderColor: [
-                                        'green',
-                                    ],
-                                    borderWidth: 1
-                                }
-                            ]
+                    const priceSeriesFormatted = priceSeries.map(
+                        ({ date, open, high, low, close }) =>
+                        ({
+                            x: new Date(date).getTime(),
+                            o: open,
+                            h: high,
+                            l: low,
+                            c: close
+                        })
+                    );
+
+                    const dataToPlot = {
+                        datasets: [{
+                            label: 'OHLC for symbol ' + tickerDisplay,
+                            data: priceSeriesFormatted
+                        }]
+                    }
+
+                    const options = {
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: graphTitle
+                            }
                         },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: {
-                                    //beginAtZero: false
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day'
                                 }
                             },
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: graphTitle
-                                }
+                            y: {
+                                beginAtZero: false
                             }
                         }
+                    };
+
+                    const ctx = document.getElementById('greatChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'candlestick',
+                        data: dataToPlot,
+                        options: options
                     });
 
                 }

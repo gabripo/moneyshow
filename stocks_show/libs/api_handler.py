@@ -11,13 +11,9 @@ def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
             tickerInput, ALPHA_ADVANTAGE_API_KEY, "TIME_SERIES_DAILY"
         )
         if "Time Series (Daily)" in stockDataDaily:
-            stockData["prices"] = stockDataDaily["Time Series (Daily)"]
-
-        stockDataSMA = api_alphavantage_call(
-            tickerInput, ALPHA_ADVANTAGE_API_KEY, "SMA"
-        )
-        if "Technical Analysis: SMA" in stockDataSMA:
-            stockData["sma"] = stockDataSMA["Technical Analysis: SMA"]
+            stockData["prices"] = get_stock_timeseries_alphavantage(
+                stockDataDaily, "Time Series (Daily)"
+            )
     else:
         # TODO add more APIs
         stockData = []
