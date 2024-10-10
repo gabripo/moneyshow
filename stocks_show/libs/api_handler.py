@@ -43,21 +43,26 @@ def get_stock_timeseries_alphavantage(
     stockDataAlphavantage, parentCategory="Time Series (Daily)"
 ):
     data = {}
-    data["open"] = get_stock_timeseries_element_alphavantage(
-        stockDataAlphavantage, parentCategory, "1. open"
-    )
-    data["high"] = get_stock_timeseries_element_alphavantage(
-        stockDataAlphavantage, parentCategory, "2. high"
-    )
-    data["low"] = get_stock_timeseries_element_alphavantage(
-        stockDataAlphavantage, parentCategory, "3. low"
-    )
-    data["close"] = get_stock_timeseries_element_alphavantage(
-        stockDataAlphavantage, parentCategory, "4. close"
-    )
-    data["volume"] = get_stock_timeseries_element_alphavantage(
-        stockDataAlphavantage, parentCategory, "5. volume"
-    )
+    if parentCategory == "Time Series (Daily)":
+        data["open"] = get_stock_timeseries_element_alphavantage(
+            stockDataAlphavantage, parentCategory, "1. open"
+        )
+        data["high"] = get_stock_timeseries_element_alphavantage(
+            stockDataAlphavantage, parentCategory, "2. high"
+        )
+        data["low"] = get_stock_timeseries_element_alphavantage(
+            stockDataAlphavantage, parentCategory, "3. low"
+        )
+        data["close"] = get_stock_timeseries_element_alphavantage(
+            stockDataAlphavantage, parentCategory, "4. close"
+        )
+        data["volume"] = get_stock_timeseries_element_alphavantage(
+            stockDataAlphavantage, parentCategory, "5. volume"
+        )
+    elif parentCategory == "Technical Analysis: SMA":
+        data = get_stock_timeseries_element_alphavantage(
+            stockDataAlphavantage, parentCategory, "SMA"
+        )
     return data
 
 

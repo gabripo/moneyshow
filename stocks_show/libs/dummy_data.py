@@ -38,11 +38,13 @@ def get_default_stock_sma(
     if os.path.isfile(fullpath):
         with open(fullpath, "r") as file:
             dataFromFile = json.load(file)
-            data = dataFromFile["Technical Analysis: SMA"]
+            data = get_stock_timeseries_alphavantage(
+                dataFromFile, "Technical Analysis: SMA"
+            )
     else:
         # fallback to simple data
         data = {
-            "default1": {"SMA": 2},
-            "default2": {"SMA": 1},
+            "default1": 2,
+            "default2": 1,
         }
     return data
