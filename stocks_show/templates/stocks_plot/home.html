@@ -89,10 +89,25 @@
                         })
                     );
 
+                    const closeDataFormatted = priceSeries.map(
+                        ({ date, close }) =>
+                        ({
+                            x: new Date(date).getTime(),
+                            y: close
+                        })
+                    )
+
                     const dataToPlot = {
                         datasets: [{
                             label: 'OHLC for symbol ' + tickerDisplay,
                             data: priceSeriesFormatted
+                        },
+                        {
+                            label: 'Close price',
+                            type: 'line',
+                            data: closeDataFormatted,
+                            borderColor: 'red',
+                            hidden: true,
                         }]
                     }
 
@@ -182,10 +197,25 @@
                         })
                     );
 
+                    const closeDataFormatted = priceSeries.map(
+                        ({ date, close }) =>
+                        ({
+                            x: new Date(date).getTime(),
+                            y: close
+                        })
+                    )
+
                     const dataToPlot = {
                         datasets: [{
                             label: 'OHLC for symbol ' + tickerDisplay,
                             data: priceSeriesFormatted
+                        },
+                        {
+                            label: 'Close price',
+                            type: 'line',
+                            data: closeDataFormatted,
+                            borderColor: 'red',
+                            hidden: true,
                         }]
                     }
 
