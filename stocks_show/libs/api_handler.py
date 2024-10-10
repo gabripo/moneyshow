@@ -42,33 +42,17 @@ def api_alphavantage_call(tickerInput, apiKey, dataType="TIME_SERIES_DAILY"):
 def get_stock_timeseries_alphavantage(
     stockDataAlphavantage, parentCategory="Time Series (Daily)"
 ):
-    data = {}
     if parentCategory == "Time Series (Daily)":
-        data["open"] = get_stock_timeseries_element_alphavantage(
-            stockDataAlphavantage, parentCategory, "1. open"
-        )
-        data["high"] = get_stock_timeseries_element_alphavantage(
-            stockDataAlphavantage, parentCategory, "2. high"
-        )
-        data["low"] = get_stock_timeseries_element_alphavantage(
-            stockDataAlphavantage, parentCategory, "3. low"
-        )
-        data["close"] = get_stock_timeseries_element_alphavantage(
-            stockDataAlphavantage, parentCategory, "4. close"
-        )
-        data["volume"] = get_stock_timeseries_element_alphavantage(
-            stockDataAlphavantage, parentCategory, "5. volume"
-        )
+        data = []
+        for key, val in stockDataAlphavantage[parentCategory].items():
+            data.append(
+                {
+                    "date": key,
+                    "open": val["1. open"],
+                    "high": val["2. high"],
+                    "low": val["3. low"],
+                    "close": val["4. close"],
+                    "volume": val["5. volume"],
+                }
+            )
     return data
-
-
-def get_stock_timeseries_element_alphavantage(
-    dataFromFile, parentCategory="Time Series (Daily)", timeseriesElement="4. close"
-):
-    if parentCategory in dataFromFile and len(dataFromFile[parentCategory]) != 0:
-        return {
-            key: val[timeseriesElement]
-            for key, val in dataFromFile[parentCategory].items()
-            if timeseriesElement in val
-        }
-    return {}
