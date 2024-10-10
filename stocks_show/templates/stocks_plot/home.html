@@ -123,6 +123,22 @@
                                 display: true,
                                 text: graphTitle
                             },
+                            tooltip: {
+                                enabled: true,
+                                mode: 'nearest',
+                                intersect: false,
+                                callbacks: {
+                                    label: function (context) {
+                                        const point = context.raw;
+                                        return [
+                                            `Open: ${point.o}`,
+                                            `High: ${point.h}`,
+                                            `Low: ${point.l}`,
+                                            `Close: ${point.c}`
+                                        ];
+                                    }
+                                }
+                            },
                             zoom: {
                                 pan: {
                                     enabled: true,
@@ -249,6 +265,22 @@
                             title: {
                                 display: true,
                                 text: graphTitle
+                            },
+                            tooltip: {
+                                enabled: true,
+                                mode: 'nearest',
+                                intersect: false,
+                                callbacks: {
+                                    label: function (context) {
+                                        const point = context.raw;
+                                        return [
+                                            `Open: ${point.o}`,
+                                            `High: ${point.h}`,
+                                            `Low: ${point.l}`,
+                                            `Close: ${point.c}`
+                                        ];
+                                    }
+                                }
                             },
                             zoom: {
                                 pan: {
