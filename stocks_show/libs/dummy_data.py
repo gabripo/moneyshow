@@ -22,9 +22,22 @@ def get_default_stock_data_prices(
             )
     else:
         # fallback to simple data
-        data["open"] = {"default1": 1, "default2": 0}
-        data["high"] = {"default1": 1, "default2": 0}
-        data["low"] = {"default1": 1, "default2": 0}
-        data["close"] = {"default1": 1, "default2": 0}
-        data["volume"] = {"default1": 1, "default2": 0}
+        data = [
+            {
+                "date": "date1",
+                "open": 0,
+                "high": 1,
+                "low": 2,
+                "close": 3,
+                "volume": 100,
+            },
+            {
+                "date": "date2",
+                "open": 1,
+                "high": 2,
+                "low": 3,
+                "close": 4,
+                "volume": 200,
+            },
+        ]
     return data
