@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost:8000",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
             "name": "Django - make migration",
             "type": "debugpy",
             "request": "launch",
@@ -27,22 +34,11 @@
             "program": "${workspaceFolder}/manage.py"
         },
         {
-            "name": "Django - add initial stocks",
+            "name": "Django - update static files",
             "type": "debugpy",
             "request": "launch",
             "args": [
-                "add_initial_stocks"
-            ],
-            "django": true,
-            "autoStartBrowser": false,
-            "program": "${workspaceFolder}/manage.py"
-        },
-        {
-            "name": "Django - update stocks",
-            "type": "debugpy",
-            "request": "launch",
-            "args": [
-                "update_stocks"
+                "collectstatic"
             ],
             "django": true,
             "autoStartBrowser": false,
