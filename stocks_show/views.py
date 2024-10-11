@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from stocks_predict.forwarder import forward_to_prediction
 from stocks_show.libs.ajax_parser import (
     db_to_update,
     get_prediction_method_from_generic_request,
@@ -84,7 +85,7 @@ def predict_stock_data(request):
         else:
             ticker = get_ticker_from_generic_request(request)
             stockData = get_stock_from_db(ticker)
-            # TODO call to stocks_predict library
+            forward_to_prediction(stockData)
             message = f"Prediction of {ticker} achieved with method {predictionMethod}"
     else:
         message = "Not Ajax"
