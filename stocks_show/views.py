@@ -65,7 +65,6 @@ def clear_stock_data(request):
             message = "Database successfully cleared"
         else:
             message = "Database not cleared"
-        return HttpResponse(message)
     else:
         message = "Not Ajax"
-        return HttpResponse(message)
+    return HttpResponse(message)
