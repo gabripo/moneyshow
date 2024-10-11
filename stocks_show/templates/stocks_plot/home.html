@@ -88,8 +88,9 @@
             // TODO invoke backend and use ML magic
         });
 
-        $$('#clear-db-btn').click(function () {
+        $('#clear-db-btn').click(function () {
             // TODO function to clear the database
+            ajax_call("/clear_stock_data/")
         })
 
     </script>

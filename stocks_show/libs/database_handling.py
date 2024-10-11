@@ -32,3 +32,12 @@ def is_stock_in_db(tickerInput) -> bool:
 
 def filter_stock_in_db(tickerInput):
     return StockData.objects.filter(ticker=tickerInput)
+
+
+def clear_db() -> bool:
+    clearedDb = True
+    try:
+        StockData.objects.all().delete()
+    except:
+        clearedDb = False
+    return clearedDb
