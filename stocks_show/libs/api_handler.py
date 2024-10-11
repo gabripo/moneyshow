@@ -1,5 +1,6 @@
 import requests
 from stocks_show.libs.parse_secrets import ALPHA_ADVANTAGE_API_KEY
+import yfinance as yf
 
 
 def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
@@ -14,9 +15,13 @@ def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
             stockData["prices"] = get_stock_timeseries_alphavantage(
                 stockDataDaily, "Time Series (Daily)"
             )
-    else:
-        # TODO add more APIs
-        stockData = []
+    elif apiName == "yfinance":
+        stockData["ticker"] = tickerInput
+
+        stockDataYfTicker = yf.Ticker(tickerInput)
+        stockDataDaily = stockDataYfTicker.history(interval="1d", period="ytd")
+        if len(stockDataDaily) != 0:
+            stockData["prices"] = get_stock_timeseries_yfinance(stockDataDaily)
     return stockData
 
 
@@ -51,4 +56,20 @@ def get_stock_timeseries_alphavantage(
                     "volume": val["5. volume"],
                 }
             )
+    return data
+
+
+def get_stock_timeseries_yfinance(stockDataYfinance):
+    data = []
+    for index, day in stockDataYfinance.iterrows():
+        data.append(
+            {
+                "date": index.strftime("%Y-%m-%d"),
+                "open": day["Open"],
+                "high": day["High"],
+                "low": day["Low"],
+                "close": day["Close"],
+                "volume": day["Volume"],
+            }
+        )
     return data
