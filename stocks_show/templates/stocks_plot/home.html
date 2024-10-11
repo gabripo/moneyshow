@@ -62,6 +62,7 @@
     <input type="button" value="clear database" id="clear-db-btn">
 
     <script>
+        var currentTicker = ''; // global variable, to be accessed in every javascript function
 
         $(document).ready(function () {
             // Right after the page is loaded, we get the stock data (default to GOOG) from the Django backend (the 'get_stock_data' function) for plotting
@@ -71,6 +72,8 @@
             var targetUrl = "/get_stock_data/";
 
             ajax_call_show(targetUrl, tickerText, checkboxVal, apiProvider);
+
+            currentTicker = tickerText;
         });
 
         $('#submit-btn').click(function () {
@@ -81,12 +84,15 @@
             var targetUrl = "/get_stock_data/";
 
             ajax_call_show(targetUrl, tickerText, checkboxVal, apiProvider);
+
+            currentTicker = tickerText;
         });
 
         $('#predict-btn').click(function () {
             var predictionMethod = $("#selection_ml").val();
             var dataInput = {
-                predMethod: predictionMethod
+                predMethod: predictionMethod,
+                stockSymbol: currentTicker
             }
             var targetUrl = "/predict_stock_data/";
 
