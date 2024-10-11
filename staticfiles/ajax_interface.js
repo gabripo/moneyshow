@@ -124,7 +124,7 @@ function ajax_call_generic(targetUrl, dataInput) {
         type: "POST",
         url: targetUrl,
         data: {
-            'data': dataInput,
+            'inputGeneric': dataInput,
         },
         success: function (res, status) {
             if (targetUrl === "/clear_stock_data/") {

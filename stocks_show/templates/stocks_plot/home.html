@@ -84,7 +84,13 @@
         });
 
         $('#predict-btn').click(function () {
-            // TODO invoke backend and use ML magic
+            var predictionMethod = $("#selection_ml").val();
+            var dataInput = {
+                predMethod: predictionMethod
+            }
+            var targetUrl = "/predict_stock_data/";
+
+            ajax_call_generic(targetUrl, dataInput)
         });
 
         $('#clear-db-btn').click(function () {

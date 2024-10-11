@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from stocks_show.libs.ajax_parser import (
     db_to_update,
+    get_prediction_method_from_request,
     get_ticker_from_request,
     is_ajax,
     get_api_name_from_request,
@@ -65,6 +66,23 @@ def clear_stock_data(request):
             message = "Database successfully cleared"
         else:
             message = "Database not cleared"
+    else:
+        message = "Not Ajax"
+    return HttpResponse(message)
+
+
+@csrf_exempt
+def predict_stock_data(request):
+    """
+    function to call a prediction over the available stocks
+    """
+    if is_ajax(request):
+        predictionMethod = get_prediction_method_from_request(request)
+        if predictionMethod == "none":
+            message = f"Invalid prediction method {predictionMethod} selected! No prediction will occur"
+        else:
+            # TODO call to stocks_predict library
+            message = f"Prediction achieved with method {predictionMethod}"
     else:
         message = "Not Ajax"
     return HttpResponse(message)

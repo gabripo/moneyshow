@@ -21,3 +21,8 @@ def db_to_update(request, useDatabase=True) -> bool:
 def get_api_name_from_request(request) -> str:
     apiName = request.POST.get("api", "database")
     return apiName
+
+
+def get_prediction_method_from_request(request) -> str:
+    predictionMethodInput = request.POST.get("inputGeneric[predMethod]", "none")
+    return predictionMethodInput
