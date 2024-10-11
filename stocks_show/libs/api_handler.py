@@ -42,7 +42,7 @@ def api_alphavantage_call(tickerInput, apiKey, dataType="TIME_SERIES_DAILY"):
 
 def get_stock_timeseries_alphavantage(
     stockDataAlphavantage, parentCategory="Time Series (Daily)"
-):
+) -> list[dict]:
     if parentCategory == "Time Series (Daily)":
         data = []
         for key, val in stockDataAlphavantage[parentCategory].items():
@@ -59,7 +59,7 @@ def get_stock_timeseries_alphavantage(
     return data
 
 
-def get_stock_timeseries_yfinance(stockDataYfinance):
+def get_stock_timeseries_yfinance(stockDataYfinance) -> list[dict]:
     data = []
     for index, day in stockDataYfinance.iterrows():
         data.append(
