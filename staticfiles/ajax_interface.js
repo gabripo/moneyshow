@@ -130,6 +130,9 @@ function ajax_call_generic(targetUrl, dataInput) {
             if (targetUrl === "/clear_stock_data/") {
                 console.log("Clearing database...")
                 console.log(res)
+            } else if (targetUrl === "/predict_stock_data/") {
+                console.log("Predicting...")
+                console.log(res)
             }
         }
     });
