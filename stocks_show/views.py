@@ -9,6 +9,7 @@ from stocks_show.libs.ajax_parser import (
 )
 from stocks_show.libs.api_handler import get_stock_from_api, is_valid_api_data
 from stocks_show.libs.database_handling import (
+    clear_db,
     get_stock_from_db,
     is_stock_in_db,
     write_data_to_db,
@@ -48,6 +49,23 @@ def get_stock_data(request):
                 write_data_to_db(tickerInput, stockData)
 
         return HttpResponse(json.dumps(stockData), content_type="application/json")
+    else:
+        message = "Not Ajax"
+        return HttpResponse(message)
+
+
+@csrf_exempt  # decorator to protect agains CSRF
+def clear_stock_data(request):
+    """
+    function to clear a database
+    """
+    if is_ajax(request):
+        isDatabaseCleared = clear_db()
+        if isDatabaseCleared:
+            message = "Database successfully cleared"
+        else:
+            message = "Database not cleared"
+        return HttpResponse(message)
     else:
         message = "Not Ajax"
         return HttpResponse(message)
