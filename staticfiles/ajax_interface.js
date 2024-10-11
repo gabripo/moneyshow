@@ -1,4 +1,4 @@
-function ajax_call(targetUrl, tickerText, checkboxVal, apiProvider) {
+function ajax_call_show(targetUrl, tickerText, checkboxVal, apiProvider) {
     $.ajax({
         type: "POST",
         url: targetUrl,
@@ -114,11 +114,22 @@ function ajax_call(targetUrl, tickerText, checkboxVal, apiProvider) {
                     data: dataToPlot,
                     options: options
                 });
-            } else {
-                if (targetUrl === "/clear_stock_data/") {
-                    console.log("Clearing database...")
-                    console.log(res)
-                }
+            }
+        }
+    });
+}
+
+function ajax_call_generic(targetUrl, dataInput) {
+    $.ajax({
+        type: "POST",
+        url: targetUrl,
+        data: {
+            'data': dataInput,
+        },
+        success: function (res, status) {
+            if (targetUrl === "/clear_stock_data/") {
+                console.log("Clearing database...")
+                console.log(res)
             }
         }
     });

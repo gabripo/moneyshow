@@ -70,7 +70,7 @@
             var apiProvider = 'database';
             var targetUrl = "/get_stock_data/";
 
-            ajax_call(targetUrl, tickerText, checkboxVal, apiProvider);
+            ajax_call_show(targetUrl, tickerText, checkboxVal, apiProvider);
         });
 
         $('#submit-btn').click(function () {
@@ -80,7 +80,7 @@
             var apiProvider = $("#selection_api").val();
             var targetUrl = "/get_stock_data/";
 
-            ajax_call(targetUrl, tickerText, checkboxVal, apiProvider);
+            ajax_call_show(targetUrl, tickerText, checkboxVal, apiProvider);
         });
 
         $('#predict-btn').click(function () {
@@ -88,8 +88,7 @@
         });
 
         $('#clear-db-btn').click(function () {
-            // TODO function to clear the database
-            ajax_call("/clear_stock_data/")
+            ajax_call_generic("/clear_stock_data/")
         })
 
     </script>
