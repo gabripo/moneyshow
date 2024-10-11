@@ -1,7 +1,7 @@
-function ajax_call(tickerText, checkboxVal, apiProvider) {
+function ajax_call(targetUrl, tickerText, checkboxVal, apiProvider) {
     $.ajax({
         type: "POST",
-        url: "/get_stock_data/",
+        url: targetUrl,
         data: {
             'ticker': tickerText,
             'update': checkboxVal,

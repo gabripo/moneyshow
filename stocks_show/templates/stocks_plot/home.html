@@ -69,8 +69,9 @@
             var tickerText = 'GOOG'; // obtain the ticker string from the input textbox, requires jQuery
             var checkboxVal = '';
             var apiProvider = 'database';
+            var targetUrl = "/get_stock_data/";
 
-            ajax_call(tickerText, checkboxVal, apiProvider);
+            ajax_call(targetUrl, tickerText, checkboxVal, apiProvider);
         });
 
         $('#submit-btn').click(function () {
@@ -78,8 +79,9 @@
             var tickerText = $('#ticker-input').val(); // obtain the ticker string from the input textbox, requires jQuery
             var checkboxVal = $('#update_db_checkbox').is(':checked') ? $('#update_db_checkbox').val() : 'load_db_values';
             var apiProvider = $("#selection_api").val();
+            var targetUrl = "/get_stock_data/";
 
-            ajax_call(tickerText, checkboxVal, apiProvider);
+            ajax_call(targetUrl, tickerText, checkboxVal, apiProvider);
         });
 
         $('#predict-btn').click(function () {
