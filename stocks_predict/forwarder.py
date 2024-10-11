@@ -1,4 +1,5 @@
 import pandas as pd
+from stocks_predict.regr_linear import predictor_linear
 
 
 def forward_to_prediction(stockData: dict, predictionMode="linear"):
@@ -7,13 +8,15 @@ def forward_to_prediction(stockData: dict, predictionMode="linear"):
     the input stock data will be changed in-place
     """
     stockDataFrame = convert_data_to_pandas_dataframe(stockData)
-    predictionFunctions = {
-        "linear": lambda x: x,
-        "decisiontree": lambda x: x,
-        "randomforest": lambda x: x,
-        "xgboost": lambda x: x,
-    }
-    predictionFunctions.get(predictionMode, lambda x: x)  # linear function by default
+    if predictionMode == "linear":
+        predictor_linear(stockDataFrame)
+    elif predictionMode == "decisiontree":
+        pass
+    elif predictionMode == "randomforest":
+        pass
+    elif predictionMode == "xgboost":
+        pass
+    # TODO ensure pass by reference, overwrite stockData before returning
     return
 
 
