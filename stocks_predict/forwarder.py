@@ -1,4 +1,5 @@
 import pandas as pd
+from stocks_predict.constants import INVALID_STOCK_POINT
 from stocks_predict.regr_linear import predictor_linear
 
 
@@ -9,14 +10,15 @@ def forward_to_prediction(stockData: dict, predictionMode="linear", predictionDa
     """
     stockDataFrame = convert_data_to_pandas_dataframe(stockData)
     if predictionMode == "linear":
-        stockDataFrame = predictor_linear(stockDataFrame, predictionDays)
+        predictionDataFrame = predictor_linear(stockDataFrame, predictionDays)
     elif predictionMode == "decisiontree":
         pass
     elif predictionMode == "randomforest":
         pass
     elif predictionMode == "xgboost":
         pass
-    # TODO ensure pass by reference, overwrite stockData before returning
+
+    append_pandas_dataframe_to_data(stockData, predictionDataFrame)
     return
 
 
@@ -28,3 +30,22 @@ def convert_data_to_pandas_dataframe(data: dict) -> pd.DataFrame:
     else:
         df = pd.DataFrame()
     return df
+
+
+def append_pandas_dataframe_to_data(data: dict, df: pd.DataFrame) -> dict:
+    df = df.reset_index().set_index("index")
+    indexesToAppend = df.index
+    for i in indexesToAppend:
+        dictToAppend = df.loc[i].to_dict()
+        sanitize_dict_to_append(dictToAppend)
+        data["prices"].append(dictToAppend)
+    return
+
+
+def sanitize_dict_to_append(dictToAppend: dict) -> None:
+    expectedKeys = ("date", "open", "high", "low", "close")
+    for key in expectedKeys:
+        if key == "date":
+            dictToAppend[key] = dictToAppend.get(key, "").strftime("%Y-%m-%d")
+        dictToAppend[key] = dictToAppend.get(key, INVALID_STOCK_POINT)
+    return

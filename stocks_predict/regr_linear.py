@@ -7,15 +7,16 @@ from sklearn.pipeline import Pipeline
 
 
 def predictor_linear(
-    data: pd.DataFrame, nDays=10, useCrossValidation=True
+    data: pd.DataFrame, nDaysToPredict=10, useCrossValidation=True, appendToInitDf=False
 ) -> pd.DataFrame:
     dates = data.index
-    X = pd.DataFrame({"index": range(len(data))}, index=dates)
+    nDays = len(data)
+    X = pd.DataFrame({"index": range(nDays)}, index=dates)
     y = data["close"]  # only data at closing is considered for a day
 
     lastDay = data.index[-1]
-    futureDates = generate_futureDates(lastDay, nDays)
-    predictionDf = initialize_prediction_df(futureDates, len(data))
+    futureDates = generate_futureDates(lastDay, nDaysToPredict)
+    predictionDf = initialize_prediction_df(futureDates, nDays)
     if useCrossValidation:
         bestParams = model_best_parameters(LinearRegression, X, y)
         bestPipeline = build_pipeline(LinearRegression, bestParams)
@@ -28,11 +29,14 @@ def predictor_linear(
         y_pred = model.predict(predictionDf[["index"]])
     predictionDf["close"] = y_pred
 
-    data["index"] = np.arange(len(data))
-    data = pd.concat(
-        [data, predictionDf]
-    )  # TODO make predictions for open, high, low, volume as well
-    return data
+    if appendToInitDf:
+        data["index"] = np.arange(nDays)  # needed to append values afterwards
+        data = pd.concat(
+            [data, predictionDf]
+        )  # TODO make predictions for open, high, low, volume as well
+        return data
+    else:
+        return predictionDf
 
 
 def initialize_prediction_df(
