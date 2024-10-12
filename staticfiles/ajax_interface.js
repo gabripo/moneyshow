@@ -102,12 +102,12 @@ function update_plot(res) {
                 callbacks: {
                     label: function (context) {
                         const point = context.raw;
-                        return [
-                            `Open: ${point.o}`,
-                            `High: ${point.h}`,
-                            `Low: ${point.l}`,
-                            `Close: ${point.c}`
-                        ];
+                        let labels = [];
+                        if (point.o !== undefined) labels.push(`Open: ${point.o}`);
+                        if (point.h !== undefined) labels.push(`High: ${point.h}`);
+                        if (point.l !== undefined) labels.push(`Low: ${point.l}`);
+                        if (point.c !== undefined) labels.push(`Close: ${point.c}`);
+                        return labels.length ? labels : `Value: ${point.y}`;
                     }
                 }
             },
