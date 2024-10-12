@@ -1,4 +1,4 @@
-from stocks_predict.constants import DEFAULT_PREDICTION_DAYS
+from stocks_predict.constants import DEFAULT_PREDICTION_DAYS, DEFAULT_STOCK_SYMBOL
 
 
 def is_ajax(request) -> bool:
@@ -9,7 +9,7 @@ def is_ajax(request) -> bool:
 
 
 def get_ticker_from_request(request, tickerFieldName="ticker") -> str:
-    tickerInput = request.POST.get(tickerFieldName, "GOOG")
+    tickerInput = request.POST.get(tickerFieldName, DEFAULT_STOCK_SYMBOL)
     tickerInput = tickerInput.upper()
     return tickerInput
 
