@@ -12,22 +12,16 @@ def predictor_linear(
     dates = data.index
     nDays = len(data)
     X = pd.DataFrame({"index": range(nDays)}, index=dates)
-    y = data["close"]  # only data at closing is considered for a day
 
     lastDay = data.index[-1]
     futureDates = generate_futureDates(lastDay, nDaysToPredict)
     predictionDf = initialize_prediction_df(futureDates, nDays)
-    if useCrossValidation:
-        bestParams = model_best_parameters(LinearRegression, X, y)
-        bestPipeline = build_pipeline(LinearRegression, bestParams)
-        bestPipeline.fit(X, y)
-        y_pred = bestPipeline.predict(predictionDf[["index"]])
-    else:
-        # 1-shot, training over the entire data-set
-        model = LinearRegression()
-        model.fit(X, y)
-        y_pred = model.predict(predictionDf[["index"]])
-    predictionDf["close"] = y_pred
+
+    elementsToPredict = ("open", "high", "low", "close")
+    for key in elementsToPredict:
+        predictionDf[key] = predict_day_element(
+            X, data[key], predictionDf[["index"]], useCrossValidation
+        )
 
     if appendToInitDf:
         data["index"] = np.arange(nDays)  # needed to append values afterwards
@@ -60,6 +54,25 @@ def generate_futureDates(
             start=startDay + pd.Timedelta(days=1), periods=nDays
         )
     return futureDates
+
+
+def predict_day_element(
+    X_train: pd.DataFrame,
+    y_train: pd.Series,
+    X_pred: pd.DataFrame,
+    useCrossValidation=True,
+) -> np.ndarray:
+    if useCrossValidation:
+        bestParams = model_best_parameters(LinearRegression, X_train, y_train)
+        bestPipeline = build_pipeline(LinearRegression, bestParams)
+        bestPipeline.fit(X_train, y_train)
+        y_pred = bestPipeline.predict(X_pred)
+    else:
+        # 1-shot, training over the entire data-set
+        model = LinearRegression()
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_pred)
+    return y_pred
 
 
 def model_best_parameters(model, X: pd.DataFrame, y: pd.Series) -> dict:
