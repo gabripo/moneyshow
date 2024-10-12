@@ -25,9 +25,7 @@ def predictor_linear(
 
     if appendToInitDf:
         data["index"] = np.arange(nDays)  # needed to append values afterwards
-        data = pd.concat(
-            [data, predictionDf]
-        )  # TODO make predictions for open, high, low, volume as well
+        data = pd.concat([data, predictionDf])
         return data
     else:
         return predictionDf
