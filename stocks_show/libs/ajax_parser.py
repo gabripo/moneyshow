@@ -11,6 +11,8 @@ def is_ajax(request) -> bool:
 def get_ticker_from_request(request, tickerFieldName="ticker") -> str:
     tickerInput = request.POST.get(tickerFieldName, DEFAULT_STOCK_SYMBOL)
     tickerInput = tickerInput.upper()
+    if not tickerInput:
+        tickerInput = DEFAULT_STOCK_SYMBOL
     return tickerInput
 
 
