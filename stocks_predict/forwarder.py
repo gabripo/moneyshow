@@ -2,14 +2,14 @@ import pandas as pd
 from stocks_predict.regr_linear import predictor_linear
 
 
-def forward_to_prediction(stockData: dict, predictionMode="linear"):
+def forward_to_prediction(stockData: dict, predictionMode="linear", predictionDays=10):
     """
     function to forward stock data to a prediction function
     the input stock data will be changed in-place
     """
     stockDataFrame = convert_data_to_pandas_dataframe(stockData)
     if predictionMode == "linear":
-        predictor_linear(stockDataFrame)
+        stockDataFrame = predictor_linear(stockDataFrame, predictionDays)
     elif predictionMode == "decisiontree":
         pass
     elif predictionMode == "randomforest":
