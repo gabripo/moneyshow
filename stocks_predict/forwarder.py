@@ -12,11 +12,11 @@ def forward_to_prediction(stockData: dict, predictionMode="linear", predictionDa
     if predictionMode == "linear":
         predictionDataFrame = predictor_linear(stockDataFrame, predictionDays)
     elif predictionMode == "decisiontree":
-        pass
+        predictionDataFrame = pd.DataFrame()
     elif predictionMode == "randomforest":
-        pass
+        predictionDataFrame = pd.DataFrame()
     elif predictionMode == "xgboost":
-        pass
+        predictionDataFrame = pd.DataFrame()
 
     append_pandas_dataframe_to_data(stockData, predictionDataFrame)
     return
