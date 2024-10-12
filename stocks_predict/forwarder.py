@@ -3,7 +3,9 @@ from stocks_predict.constants import INVALID_STOCK_POINT
 from stocks_predict.regr_linear import predictor_linear
 
 
-def forward_to_prediction(stockData: dict, predictionMode="linear", predictionDays=10):
+def forward_to_prediction(
+    stockData: dict, predictionMode="linear", predictionDays=10
+) -> bool:
     """
     function to forward stock data to a prediction function
     the input stock data will be changed in-place
@@ -18,8 +20,10 @@ def forward_to_prediction(stockData: dict, predictionMode="linear", predictionDa
     elif predictionMode == "xgboost":
         predictionDataFrame = pd.DataFrame()
 
-    append_pandas_dataframe_to_data(stockData, predictionDataFrame)
-    return
+    if len(predictionDataFrame) != 0:
+        append_pandas_dataframe_to_data(stockData, predictionDataFrame)
+        return True
+    return False
 
 
 def convert_data_to_pandas_dataframe(data: dict) -> pd.DataFrame:
