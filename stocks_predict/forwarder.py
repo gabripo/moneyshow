@@ -20,6 +20,12 @@ def forward_to_prediction(
         predictionDataFrame = pd.DataFrame()
     elif predictionMode == "xgboost":
         predictionDataFrame = pd.DataFrame()
+    elif predictionMode == "ARIMA":
+        predictionDataFrame = pd.DataFrame()
+    elif predictionMode == "LSTM":
+        predictionDataFrame = pd.DataFrame()
+    else:
+        predictionDataFrame = pd.DataFrame()
 
     if len(predictionDataFrame) != 0:
         append_pandas_dataframe_to_data(stockData, predictionDataFrame)
