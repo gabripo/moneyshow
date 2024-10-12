@@ -1,5 +1,6 @@
 import pandas as pd
 from stocks_predict.constants import INVALID_STOCK_POINT
+from stocks_predict.regr_decisiontree import predictor_decisiontree
 from stocks_predict.regr_linear import predictor_linear
 
 
@@ -14,7 +15,7 @@ def forward_to_prediction(
     if predictionMode == "linear":
         predictionDataFrame = predictor_linear(stockDataFrame, predictionDays)
     elif predictionMode == "decisiontree":
-        predictionDataFrame = pd.DataFrame()
+        predictionDataFrame = predictor_decisiontree(stockDataFrame, predictionDays)
     elif predictionMode == "randomforest":
         predictionDataFrame = pd.DataFrame()
     elif predictionMode == "xgboost":
