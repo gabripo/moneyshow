@@ -112,21 +112,16 @@ function update_plot(res) {
                 }
             },
             zoom: {
-                pan: {
-                    enabled: true,
-                    mode: 'xy'
-                },
                 zoom: {
-                    enabled: true,
-                    mode: 'xy',
-                    drag: {
+                    wheel: {
                         enabled: true,
-                        borderColor: 'rgba(0, 0, 0, 0.5)',
-                        borderWidth: 1,
-                        backgroundColor: 'rgba(225,225,225,0.3)'
-                    }
+                    },
+                    pinch: {
+                        enabled: true
+                    },
+                    mode: 'xy',
                 }
-            }
+            },
         },
         scales: {
             x: {
