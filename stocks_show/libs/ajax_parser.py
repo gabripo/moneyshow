@@ -6,7 +6,7 @@ def is_ajax(request) -> bool:
 
 
 def get_ticker_from_request(request, tickerFieldName="ticker") -> str:
-    tickerInput = request.POST.get(tickerFieldName, "null")
+    tickerInput = request.POST.get(tickerFieldName, "GOOG")
     tickerInput = tickerInput.upper()
     return tickerInput
 
