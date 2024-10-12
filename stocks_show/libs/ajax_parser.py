@@ -1,3 +1,6 @@
+from stocks_predict.constants import DEFAULT_PREDICTION_DAYS
+
+
 def is_ajax(request) -> bool:
     """
     function to ensure that a request is an AJAX POST request from the frontend
@@ -28,3 +31,8 @@ def get_prediction_method_from_generic_request(
 ) -> str:
     predictionMethodInput = request.POST.get(predMethFieldName, "none")
     return predictionMethodInput
+
+
+def get_prediction_days_from_request(request) -> str:
+    predictionDays = request.POST.get("predDays", DEFAULT_PREDICTION_DAYS)
+    return int(predictionDays)

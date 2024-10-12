@@ -31,13 +31,14 @@ function ajax_call_generic(targetUrl, dataInput) {
     });
 }
 
-function ajax_call_predict(targetUrl, tickerText, predictMethod) {
+function ajax_call_predict(targetUrl, tickerText, predictMethod, predictionDays) {
     $.ajax({
         type: "POST",
         url: targetUrl,
         data: {
             'ticker': tickerText,
-            'predMet': predictMethod
+            'predMet': predictMethod,
+            'predDays': predictionDays
         },
         success: function (res, status) {
             console.log("Predicting...")

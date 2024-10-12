@@ -52,6 +52,10 @@
         <option value="randomforest">Random Forest</option>
         <option value="xgboost">XGBoost</option>
     </select>
+    <form>
+        <label for="integer_field_form">Days for the prediction:</label>
+        <input type="number" id="prediction_days" name="prediction_days_field" step="1" required>
+    </form>
     <input type="button" value="predict" id="predict-btn">
 
     <!-- canvas over which Chart.js will generate the plot -->
@@ -92,8 +96,9 @@
         $('#predict-btn').click(function () {
             var predictionMethod = $("#selection_ml").val();
             var targetUrl = "/predict_stock_data/";
+            var predictionDays = $('#prediction_days').val();
 
-            ajax_call_predict(targetUrl, currentTicker, predictionMethod)
+            ajax_call_predict(targetUrl, currentTicker, predictionMethod, predictionDays)
         });
 
         $('#clear-db-btn').click(function () {
