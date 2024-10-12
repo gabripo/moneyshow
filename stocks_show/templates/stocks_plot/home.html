@@ -91,13 +91,9 @@
 
         $('#predict-btn').click(function () {
             var predictionMethod = $("#selection_ml").val();
-            var dataInput = {
-                predMethod: predictionMethod,
-                stockSymbol: currentTicker
-            }
             var targetUrl = "/predict_stock_data/";
 
-            ajax_call_predict(targetUrl, dataInput)
+            ajax_call_predict(targetUrl, currentTicker, predictionMethod)
         });
 
         $('#clear-db-btn').click(function () {

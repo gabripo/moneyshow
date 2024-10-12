@@ -5,7 +5,6 @@ from stocks_predict.forwarder import forward_to_prediction
 from stocks_show.libs.ajax_parser import (
     db_to_update,
     get_prediction_method_from_generic_request,
-    get_ticker_from_generic_request,
     get_ticker_from_request,
     is_ajax,
     get_api_name_from_request,
@@ -83,7 +82,7 @@ def predict_stock_data(request):
         if predictionMethod == "none":
             message = f"Invalid prediction method {predictionMethod} selected! No prediction will occur"
         else:
-            ticker = get_ticker_from_generic_request(request)
+            ticker = get_ticker_from_request(request)
             stockData = get_stock_from_db(ticker)
             forward_to_prediction(stockData, predictionMethod)
             message = f"Prediction of {ticker} achieved with method {predictionMethod}"

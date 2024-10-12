@@ -23,11 +23,8 @@ def get_api_name_from_request(request) -> str:
     return apiName
 
 
-def get_ticker_from_generic_request(request) -> str:
-    symbol = request.POST.get("inputGeneric[stockSymbol]", "none")
-    return symbol
-
-
-def get_prediction_method_from_generic_request(request) -> str:
-    predictionMethodInput = request.POST.get("inputGeneric[predMethod]", "none")
+def get_prediction_method_from_generic_request(
+    request, predMethFieldName="predMet"
+) -> str:
+    predictionMethodInput = request.POST.get(predMethFieldName, "none")
     return predictionMethodInput

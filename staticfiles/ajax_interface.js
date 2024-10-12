@@ -135,12 +135,13 @@ function ajax_call_generic(targetUrl, dataInput) {
     });
 }
 
-function ajax_call_predict(targetUrl, dataInput) {
+function ajax_call_predict(targetUrl, tickerText, predictMethod) {
     $.ajax({
         type: "POST",
         url: targetUrl,
         data: {
-            'inputGeneric': dataInput,
+            'ticker': tickerText,
+            'predMet': predictMethod
         },
         success: function (res, status) {
             console.log("Predicting...")
