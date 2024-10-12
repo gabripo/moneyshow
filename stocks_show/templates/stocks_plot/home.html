@@ -44,6 +44,7 @@
     </select>
     </br>
     </br>
+    <!-- TODO dynamically build the selection menu by using supported regressors, only -->
     <label for="selection_api">Regressor:</label>
     <select name="selection_ml" id="selection_ml">
         <option value="linear">Linear Regression</option>
@@ -96,7 +97,7 @@
             }
             var targetUrl = "/predict_stock_data/";
 
-            ajax_call_generic(targetUrl, dataInput)
+            ajax_call_predict(targetUrl, dataInput)
         });
 
         $('#clear-db-btn').click(function () {

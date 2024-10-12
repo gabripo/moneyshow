@@ -130,10 +130,21 @@ function ajax_call_generic(targetUrl, dataInput) {
             if (targetUrl === "/clear_stock_data/") {
                 console.log("Clearing database...")
                 console.log(res)
-            } else if (targetUrl === "/predict_stock_data/") {
-                console.log("Predicting...")
-                console.log(res)
             }
+        }
+    });
+}
+
+function ajax_call_predict(targetUrl, dataInput) {
+    $.ajax({
+        type: "POST",
+        url: targetUrl,
+        data: {
+            'inputGeneric': dataInput,
+        },
+        success: function (res, status) {
+            console.log("Predicting...")
+            // TODO use res here to plot stock data
         }
     });
 }

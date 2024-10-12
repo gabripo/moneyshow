@@ -87,6 +87,7 @@ def predict_stock_data(request):
             stockData = get_stock_from_db(ticker)
             forward_to_prediction(stockData, predictionMethod)
             message = f"Prediction of {ticker} achieved with method {predictionMethod}"
+            return HttpResponse(json.dumps(stockData), content_type="application/json")
     else:
         message = "Not Ajax"
     return HttpResponse(message)
