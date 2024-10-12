@@ -85,9 +85,14 @@ def predict_stock_data(request):
         else:
             ticker = get_ticker_from_request(request)
             stockData = get_stock_from_db(ticker)
-            forward_to_prediction(stockData, predictionMethod)
-            sanitize_prediction(stockData)
-            print(f"Prediction of {ticker} achieved with method {predictionMethod}")
+            predictionWorked = forward_to_prediction(stockData, predictionMethod)
+            if predictionWorked:
+                sanitize_prediction(stockData)
+                print(f"Prediction of {ticker} achieved with method {predictionMethod}")
+            else:
+                print(
+                    f"Prediction of {ticker} not worked with method {predictionMethod}"
+                )
             return HttpResponse(json.dumps(stockData), content_type="application/json")
     else:
         message = "Not Ajax"
