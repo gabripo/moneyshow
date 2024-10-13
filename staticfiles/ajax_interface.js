@@ -144,10 +144,14 @@ function update_plot(res) {
     };
 
     const ctx = document.getElementById('greatChart').getContext('2d');
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'candlestick',
         data: dataToPlot,
         options: options
+    });
+
+    document.getElementById('reset_zoom').addEventListener('click', function () {
+        chart.resetZoom();
     });
 }
 
