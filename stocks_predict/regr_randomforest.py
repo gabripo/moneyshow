@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import ParameterGrid, RandomizedSearchCV
 import numpy as np
 from stocks_predict.regr_linear import (
     build_pipeline,
@@ -78,8 +78,7 @@ def model_parameters_combinations_decisiontree() -> list[dict]:
         "max_features": [None, "sqrt", "log2"],
         "max_leaf_nodes": [None, 5, 10, 20],
         "min_impurity_decrease": [0.0, 0.1, 0.2],
-        "bootstrap": [True, False],
-        "oob_score": [True, False],
+        "bootstrap": [False],
         "n_jobs": [-1],  # use all the possible processors
         "warm_start": [True, False],
         "ccp_alpha": [
@@ -87,6 +86,5 @@ def model_parameters_combinations_decisiontree() -> list[dict]:
             0.1,
             0.2,
         ],  # complexity parameter used for Minimal Cost-Complexity Pruning
-        "max_samples": [None if bootstrap else 1.0 for bootstrap in [True, False]],
     }
     return parametersGridRandomForestRegressor
