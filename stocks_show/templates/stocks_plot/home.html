@@ -26,49 +26,58 @@
 
 <body>
     <h2>Interactive Stock Visualizer</h2>
-    <br>
+    <div id="controls">
+        <div class="column">
+            <label for="ticker-input">Enter Symbol:</label>
+            <input type="text" id="ticker-input">
 
-    <!-- input field for the ticker -->
-    <label for="ticker-input">Enter Symbol:</label>
-    <input type="text" id="ticker-input">
-    <!-- submit button for the input field -->
-    <input type="button" value="submit" id="submit-btn">
-    <br>
-    <input type="checkbox" id="update_db_checkbox" value="update_db_values"> Update database values
-    </br>
-    </br>
-    <label for="selection_api">API provider:</label>
-    <select name="selection_api" id="selection_api">
-        <option value="yfinance">Yahoo Finance</option>
-        <option value="alphavantage">Alpha Vantage</option>
-    </select>
-    </br>
-    </br>
-    <!-- TODO dynamically build the selection menu by using supported regressors, only -->
-    <label for="selection_api">Regressor:</label>
-    <select name="selection_ml" id="selection_ml">
-        <option value="linear">Linear Regression</option>
-        <option value="decisiontree">Decision Tree Regression</option>
-        <option value="randomforest">Random Forest</option>
-        <option value="xgboost">XGBoost</option>
-        <option value="xgboost">ARIMA</option>
-        <option value="xgboost">LSTM</option>
-    </select>
-    <form>
-        <label for="integer_field_form">Days for the prediction:</label>
-        <input type="number" id="prediction_days" name="prediction_days_field" step="1" required>
-    </form>
-    <input type="button" value="predict" id="predict-btn">
+            <label>
+                <input type="checkbox" id="update_db_checkbox" value="update_db_values"> Update database values
+            </label>
+        </div>
+
+        <div class="column">
+            <label for="selection_api">API provider:</label>
+            <select name="selection_api" id="selection_api">
+                <option value="yfinance">Yahoo Finance</option>
+                <option value="alphavantage">Alpha Vantage</option>
+            </select>
+
+            <input type="button" value="Visualize Stock" id="submit-btn">
+        </div>
+    </div>
+
+    <div id="controls">
+        <div class="column">
+            <label for="selection_ml">Regressor:</label>
+            <select name="selection_ml" id="selection_ml">
+                <option value="linear">Linear Regression</option>
+                <option value="decisiontree">Decision Tree Regression</option>
+                <option value="randomforest">Random Forest</option>
+                <option value="xgboost">XGBoost</option>
+                <option value="arima">ARIMA</option>
+                <option value="lstm">LSTM</option>
+            </select>
+        </div>
+
+        <div class="column">
+            <form>
+                <label for="prediction_days">Days for the prediction:</label>
+                <input type="number" id="prediction_days" name="prediction_days_field" step="1" required>
+            </form>
+
+            <input type="button" value="Predict" id="predict-btn">
+        </div>
+    </div>
 
     <!-- canvas over which Chart.js will generate the plot -->
     <div id="graph-area">
-        <h2>Plot</h2>
-        <canvas id="greatChart"></canvas>
         <button id="reset_zoom">Reset Zoom</button>
+        <canvas id="greatChart"></canvas>
     </div>
     <p id="text_field"></p>
     <br>
-    <input type="button" value="clear database" id="clear-db-btn">
+    <button id="clear-db-btn">Clear Database</button>
 
     <script>
         var currentTicker = 'GOOG'; // global variable, to be accessed in every javascript function
