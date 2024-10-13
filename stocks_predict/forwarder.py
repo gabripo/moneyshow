@@ -3,6 +3,7 @@ from stocks_predict.constants import INVALID_STOCK_POINT
 from stocks_predict.regr_decisiontree import predictor_decisiontree
 from stocks_predict.regr_linear import predictor_linear
 from stocks_predict.regr_randomforest import predictor_randomforest
+from stocks_predict.regr_xgboost import predictor_xgboost
 
 
 def forward_to_prediction(
@@ -18,6 +19,7 @@ def forward_to_prediction(
         "linear": predictor_linear,
         "decisiontree": predictor_decisiontree,
         "randomforest": predictor_randomforest,
+        "xgboost": predictor_xgboost,
     }
     predictorArgs = {
         "data": stockDataFrame,
