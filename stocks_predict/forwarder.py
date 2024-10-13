@@ -13,18 +13,22 @@ def forward_to_prediction(
     the input stock data will be changed in-place
     """
     stockDataFrame = convert_data_to_pandas_dataframe(stockData)
-    if predictionMode == "linear":
-        predictionDataFrame = predictor_linear(stockDataFrame, predictionDays)
-    elif predictionMode == "decisiontree":
-        predictionDataFrame = predictor_decisiontree(stockDataFrame, predictionDays)
-    elif predictionMode == "randomforest":
-        predictionDataFrame = predictor_randomforest(stockDataFrame, predictionDays)
-    elif predictionMode == "xgboost":
-        predictionDataFrame = pd.DataFrame()
-    elif predictionMode == "ARIMA":
-        predictionDataFrame = pd.DataFrame()
-    elif predictionMode == "LSTM":
-        predictionDataFrame = pd.DataFrame()
+
+    predictorMapping = {
+        "linear": predictor_linear,
+        "decisiontree": predictor_decisiontree,
+        "randomforest": predictor_randomforest,
+    }
+    predictorArgs = {
+        "data": stockDataFrame,
+        "nDaysToPredict": predictionDays,
+        "useCrossValidation": True,
+        "appendToInitDf": False,
+    }
+
+    prediction_function = predictorMapping.get(predictionMode)
+    if prediction_function:
+        predictionDataFrame = prediction_function(**predictorArgs)
     else:
         predictionDataFrame = pd.DataFrame()
 
