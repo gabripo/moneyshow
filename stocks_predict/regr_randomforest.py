@@ -22,9 +22,11 @@ def predictor_randomforest(
 
     elementsToPredict = ("open", "high", "low", "close")
     for key in elementsToPredict:
+        print(f"Predicting {key} for the following {nDaysToPredict}...")
         predictionDf[key] = predict_day_element(
             X, data[key], predictionDf[["index"]], useCrossValidation
         )
+        print(f"Prediction of {key} for the following {nDaysToPredict} concluded!")
 
     if appendToInitDf:
         data["index"] = np.arange(nDays)  # needed to append values afterwards
