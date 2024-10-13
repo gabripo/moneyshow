@@ -4,6 +4,9 @@ This project allows you to search for stock prices using Alpha Vantage (API requ
 
 The web development framework used is Django.
 
+![image](https://github.com/user-attachments/assets/dba76d64-2a49-474e-b016-bc029b0ba334)
+
+
 ## Features
 - Search stock prices using Alpha Vantage or Yahoo Finance
 - Visualize stock prices with Graph.js candlestick plot
