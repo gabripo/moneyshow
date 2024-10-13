@@ -56,7 +56,7 @@ def predict_day_element(
 
 
 def model_best_parameters(model, X: pd.DataFrame, y: pd.Series) -> dict:
-    parametersGrid = model_parameters_combinations_decisiontree()
+    parametersGrid = model_parameters_combinations_xgboost()
     grid_search = RandomizedSearchCV(
         estimator=model,
         param_distributions=parametersGrid,
@@ -69,7 +69,7 @@ def model_best_parameters(model, X: pd.DataFrame, y: pd.Series) -> dict:
     return bestParams
 
 
-def model_parameters_combinations_decisiontree() -> list[dict]:
+def model_parameters_combinations_xgboost() -> list[dict]:
     parametersGridXGBRegressor = {
         "n_estimators": range(50, 500, 50),
         "max_depth": range(3, 15, 2),

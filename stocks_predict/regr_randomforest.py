@@ -56,7 +56,7 @@ def predict_day_element(
 
 
 def model_best_parameters(model, X: pd.DataFrame, y: pd.Series) -> dict:
-    parametersGrid = model_parameters_combinations_decisiontree()
+    parametersGrid = model_parameters_combinations_randomforest()
     grid_search = RandomizedSearchCV(
         estimator=model,
         param_distributions=parametersGrid,
@@ -69,7 +69,7 @@ def model_best_parameters(model, X: pd.DataFrame, y: pd.Series) -> dict:
     return bestParams
 
 
-def model_parameters_combinations_decisiontree() -> list[dict]:
+def model_parameters_combinations_randomforest() -> list[dict]:
     parametersGridRandomForestRegressor = {
         "n_estimators": [50, 100, 200, 300],
         "criterion": ["squared_error", "friedman_mse", "absolute_error", "poisson"],
