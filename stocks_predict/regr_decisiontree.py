@@ -15,7 +15,7 @@ def predictor_decisiontree(
     dates = data.index
     nDays = len(data)
     X = pd.DataFrame({"index": range(nDays)}, index=dates)
-
+    # TODO add time lag!
     lastDay = data.index[-1]
     futureDates = generate_futureDates(lastDay, nDaysToPredict)
     predictionDf = initialize_prediction_df(futureDates, nDays)
