@@ -44,7 +44,7 @@ function ajax_call_predict(targetUrl, tickerText, predictMethod, predictionDays)
             console.log("Predicting...")
             update_plot(res)
             console.log("Prediction plotted")
-            if (predictMethod === 'decisiontree') {
+            if (predictMethod === 'decisiontree' || predictMethod === 'randomforest') {
                 show_text_below_canvas("Decision trees, at their core, are designed to capture patterns in the feature space at a given point in time, without considering the sequence of data points. They split the data based on feature values, creating if-then-else rules, but they don't account for the order in which data points appear. Temporal dependencies are all about the order and progression of data points. Think of it like this: a decision tree is like taking snapshots of moments and trying to piece them together, whereas time series models are more like watching a movie—they get the flow and progression of events.")
             }
         }
