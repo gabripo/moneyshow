@@ -60,4 +60,12 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+### 7. Search for a stock by symbol
+
+Insert the symbol (ticker) of the stock, then click on "Visualize Stock" to fetch its data.
+
+### 8. (Optional) Predict stock prices
+
+Select a prediction method from the dropdown menu, then click on "Predict".
+
 Open your browser and navigate to http://127.0.0.1:8000 to access the application.
