@@ -1,9 +1,12 @@
 import pandas as pd
 from sklearn.linear_model import LinearRegression
-from sklearn.pipeline import Pipeline
-from sklearn.model_selection import cross_val_score
 import numpy as np
-from sklearn.pipeline import Pipeline
+from stocks_predict.common_regr import (
+    build_pipeline,
+    evaluate_model_cross_validation,
+    generate_futureDates,
+    initialize_prediction_df,
+)
 
 
 def predictor_linear(
@@ -29,29 +32,6 @@ def predictor_linear(
         return data
     else:
         return predictionDf
-
-
-def initialize_prediction_df(
-    datesArray: pd.DatetimeIndex, startIndex: int
-) -> pd.DataFrame:
-    predictionDf = pd.DataFrame({"date": datesArray})
-    predictionDf["index"] = np.arange(startIndex, startIndex + len(predictionDf))
-    predictionDf.set_index("date", inplace=True)
-    return predictionDf
-
-
-def generate_futureDates(
-    startDay: pd.Timestamp, nDays=10, onlyBusinessDays=True
-) -> pd.DatetimeIndex:
-    if onlyBusinessDays:
-        futureDates = pd.date_range(
-            start=startDay + pd.Timedelta(days=1), periods=nDays, freq="B"
-        )
-    else:
-        futureDates = pd.date_range(
-            start=startDay + pd.Timedelta(days=1), periods=nDays
-        )
-    return futureDates
 
 
 def predict_day_element(
@@ -91,18 +71,3 @@ def model_parameters_combinations_linear() -> list[dict]:
         {"fit_intercept": False},
     ]
     return parametersGridLinearRegressor
-
-
-def evaluate_model_cross_validation(
-    model, params: dict, X: pd.DataFrame, y: pd.Series, nFolds=5
-) -> float:
-    pipeline = build_pipeline(model, params)
-    scores = cross_val_score(
-        pipeline, X, y, cv=nFolds, scoring="neg_mean_absolute_error"
-    )
-    return scores.mean()
-
-
-def build_pipeline(model, params: dict) -> Pipeline:
-    pipeline = Pipeline([("regressor", model(**params))])
-    return pipeline
