@@ -67,13 +67,7 @@ function update_plot(res) {
         })
     );
 
-    const closeDataFormatted = priceSeries.map(
-        ({ date, close }) =>
-        ({
-            x: new Date(date).getTime(),
-            y: close
-        })
-    )
+    const closeDataFormatted = format_data_priceseries(priceSeries, 'close')
 
     const dataToPlot = {
         datasets: [{
@@ -153,6 +147,18 @@ function update_plot(res) {
     document.getElementById('reset_zoom').addEventListener('click', function () {
         chart.resetZoom();
     });
+}
+
+function format_data_priceseries(priceSeries, fieldName) {
+    const dataFormatted = priceSeries.map(
+        ({ date, [fieldName]: fieldValue }) =>
+        ({
+            x: new Date(date).getTime(),
+            y: fieldValue
+        })
+    )
+
+    return dataFormatted;
 }
 
 function show_text_below_canvas(textToShow) {
