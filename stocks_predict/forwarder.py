@@ -2,6 +2,7 @@ import pandas as pd
 from stocks_predict.constants import INVALID_STOCK_POINT
 from stocks_predict.regr_decisiontree import predictor_decisiontree
 from stocks_predict.regr_linear import predictor_linear
+from stocks_predict.regr_randomforest import predictor_randomforest
 
 
 def forward_to_prediction(
@@ -17,7 +18,7 @@ def forward_to_prediction(
     elif predictionMode == "decisiontree":
         predictionDataFrame = predictor_decisiontree(stockDataFrame, predictionDays)
     elif predictionMode == "randomforest":
-        predictionDataFrame = pd.DataFrame()
+        predictionDataFrame = predictor_randomforest(stockDataFrame, predictionDays)
     elif predictionMode == "xgboost":
         predictionDataFrame = pd.DataFrame()
     elif predictionMode == "ARIMA":
