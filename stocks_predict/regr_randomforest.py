@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import ParameterGrid, RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 import numpy as np
 from stocks_predict.regr_linear import (
     build_pipeline,
