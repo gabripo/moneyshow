@@ -67,7 +67,11 @@ function update_plot(res) {
         })
     );
 
+    const openDataFormatted = format_data_priceseries(priceSeries, 'open')
+    const highDataFormatted = format_data_priceseries(priceSeries, 'high')
+    const lowDataFormatted = format_data_priceseries(priceSeries, 'low')
     const closeDataFormatted = format_data_priceseries(priceSeries, 'close')
+
 
     const dataToPlot = {
         datasets: [{
@@ -75,12 +79,34 @@ function update_plot(res) {
             data: priceSeriesFormatted
         },
         {
+            label: 'Open price',
+            type: 'line',
+            data: openDataFormatted,
+            borderColor: 'blue',
+            hidden: true,
+        },
+        {
+            label: 'High price',
+            type: 'line',
+            data: highDataFormatted,
+            borderColor: 'yellow',
+            hidden: true,
+        },
+        {
+            label: 'Low price',
+            type: 'line',
+            data: lowDataFormatted,
+            borderColor: 'orange',
+            hidden: true,
+        },
+        {
             label: 'Close price',
             type: 'line',
             data: closeDataFormatted,
             borderColor: 'red',
             hidden: true,
-        }]
+        }
+        ]
     }
 
     const options = {
