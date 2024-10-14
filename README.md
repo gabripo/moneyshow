@@ -8,21 +8,21 @@ The web development framework used is Django.
 
 
 ## Features
-- Search stock prices using Alpha Vantage or Yahoo Finance
-- Visualize stock prices with Graph.js candlestick plot
+- Search stock prices using [Alpha Vantage](https://www.alphavantage.co/) or [Yahoo Finance](https://finance.yahoo.com/)
+- Visualize stock prices with [Chart.js](https://www.chartjs.org/) candlestick plot
 - Perform stock price predictions with Machine Learning algorithms
 - Easy-to-use web interface built with Django
 
 ## Requirements
 - Python 3.x
-- Alpha Vantage API key (if using Alpha Vantage for stock prices)
+- Alpha Vantage API key (if using Alpha Vantage for stock prices), get one [here](https://www.alphavantage.co/support/#api-key)
 - Required Python packages (listed in `requirements.txt`)
 
 ## Getting Started
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/stock-price-visualizer.git
+git clone https://github.com/gabripo/moneyshow.git
 cd stock-price-visualizer
 ```
 
