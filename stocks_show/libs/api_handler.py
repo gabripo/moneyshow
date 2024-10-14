@@ -14,19 +14,18 @@ def get_stock_from_api(
             tickerInput, ALPHA_ADVANTAGE_API_KEY, "daily", nLastDaysToLoad
         )
         stockDataDaily = api_alphavantage_call(**apiOptions)
-        if "Time Series (Daily)" in stockDataDaily:
-            stockData["prices"] = get_stock_timeseries_alphavantage(
-                stockDataDaily, "Time Series (Daily)"
-            )
+        stockData["prices"] = get_stock_timeseries_alphavantage(
+            stockDataDaily, "Time Series (Daily)"
+        )
     elif apiName == "yfinance":
         stockData["ticker"] = tickerInput
 
         apiOptions = api_yfinance_options(tickerInput, "daily", nLastDaysToLoad)
         stockDataDaily = api_yfinance_call(**apiOptions)
-        if len(stockDataDaily) != 0:
-            stockData["prices"] = get_stock_timeseries_yfinance(stockDataDaily)
+        stockData["prices"] = get_stock_timeseries_yfinance(stockDataDaily)
 
-    sort_stock_data_by_date(stockData)
+    if stockData:
+        sort_stock_data_by_date(stockData)
     return stockData
 
 
@@ -76,20 +75,24 @@ def api_alphavantage_options(
 def get_stock_timeseries_alphavantage(
     stockDataAlphavantage, parentCategory="Time Series (Daily)"
 ) -> list[dict]:
-    if parentCategory == "Time Series (Daily)":
+    if parentCategory in stockDataAlphavantage:
+        if parentCategory == "Time Series (Daily)":
+            data = []
+            for key, val in stockDataAlphavantage[parentCategory].items():
+                data.append(
+                    {
+                        "date": key,
+                        "open": val["1. open"],
+                        "high": val["2. high"],
+                        "low": val["3. low"],
+                        "close": val["4. close"],
+                        "volume": val["5. volume"],
+                    }
+                )
+        sorted(data, key=lambda x: x["date"])
+        # TODO implement other categories
+    else:
         data = []
-        for key, val in stockDataAlphavantage[parentCategory].items():
-            data.append(
-                {
-                    "date": key,
-                    "open": val["1. open"],
-                    "high": val["2. high"],
-                    "low": val["3. low"],
-                    "close": val["4. close"],
-                    "volume": val["5. volume"],
-                }
-            )
-    sorted(data, key=lambda x: x["date"])
     return data
 
 
