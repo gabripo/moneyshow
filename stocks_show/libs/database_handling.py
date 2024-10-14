@@ -1,4 +1,5 @@
 import json
+from stocks_show.libs.dummy_data import get_default_stock_data
 from stocks_show.models import StockData
 
 
@@ -17,6 +18,10 @@ def get_stock_from_db(tickerInput) -> dict:
     """
     Django's way of saying SELECT * FROM StockData WHERE ticker = tickerInput
     """
+    if not is_stock_in_db(tickerInput):
+        stockData = get_default_stock_data(tickerInput)
+        write_data_to_db(tickerInput, stockData)
+
     filteredDb = filter_stock_in_db(tickerInput)
     entry = filteredDb[0]
     if not entry:
