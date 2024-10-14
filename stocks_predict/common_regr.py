@@ -40,3 +40,14 @@ def evaluate_model_cross_validation(
 def build_pipeline(model, params: dict) -> Pipeline:
     pipeline = Pipeline([("regressor", model(**params))])
     return pipeline
+
+
+def timeshift_pandaseries(yToShift: pd.Series, nLags: int, nanFill=0.0) -> pd.DataFrame:
+    resDf = pd.DataFrame()
+    for lag in range(1, nLags + 1):
+        featureName = f"y_lag_{lag}"
+        resDf[featureName] = yToShift.shift(lag)
+
+    # filling NaN values due to timeshift
+    resDf = resDf.fillna(nanFill)
+    return resDf

@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import RandomizedSearchCV
 import numpy as np
+from stocks_predict.common_regr import timeshift_pandaseries
 from stocks_predict.regr_linear import (
     build_pipeline,
     generate_futureDates,
@@ -10,12 +11,15 @@ from stocks_predict.regr_linear import (
 
 
 def predictor_decisiontree(
-    data: pd.DataFrame, nDaysToPredict=10, useCrossValidation=True, appendToInitDf=False
+    data: pd.DataFrame,
+    nDaysToPredict=10,
+    useCrossValidation=True,
+    appendToInitDf=False,
+    timeLagSamples=5,
 ) -> pd.DataFrame:
     dates = data.index
     nDays = len(data)
-    X = pd.DataFrame({"index": range(nDays)}, index=dates)
-    # TODO add time lag!
+
     lastDay = data.index[-1]
     futureDates = generate_futureDates(lastDay, nDaysToPredict)
     predictionDf = initialize_prediction_df(futureDates, nDays)
@@ -23,8 +27,12 @@ def predictor_decisiontree(
     elementsToPredict = ("open", "high", "low", "close")
     for key in elementsToPredict:
         print(f"Predicting {key} for the following {nDaysToPredict}...")
+        y = data[key]
+        X = timeshift_pandaseries(y, timeLagSamples)
+        # X["index"] = range(nDays)
+
         predictionDf[key] = predict_day_element(
-            X, data[key], predictionDf[["index"]], useCrossValidation
+            X, y, predictionDf[["index"]], useCrossValidation
         )
         print(f"Prediction of {key} for the following {nDaysToPredict} concluded!")
 
@@ -41,17 +49,31 @@ def predict_day_element(
     y_train: pd.Series,
     X_pred: pd.DataFrame,
     useCrossValidation=True,
+    nDaysToPredict=5,
 ) -> np.ndarray:
     if useCrossValidation:
         bestParams = model_best_parameters(DecisionTreeRegressor(), X_train, y_train)
         bestPipeline = build_pipeline(DecisionTreeRegressor, bestParams)
         bestPipeline.fit(X_train, y_train)
-        y_pred = bestPipeline.predict(X_pred)
     else:
         # 1-shot, training over the entire data-set
-        model = DecisionTreeRegressor()
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_pred)
+        bestPipeline = DecisionTreeRegressor()
+        bestPipeline.fit(X_train, y_train)
+
+    futureDates = X_pred.index  # for now, directly the vector in the future
+    lastDay = X_train.iloc[-1].copy()
+    y_pred = []
+    for date in futureDates:
+        newDay = {
+            f"y_lag_{lag}": lastDay[f"y_lag_{lag-1}"]
+            for lag in range(2, nDaysToPredict + 1)
+        }
+        newDay["y_lag_1"] = bestPipeline.predict(
+            [lastDay[[f"y_lag_{lag}" for lag in range(1, nDaysToPredict + 1)]]]
+        )[0]
+        newDay["y"] = newDay["y_lag_1"]
+        y_pred.append(newDay["y"])
+
     return y_pred
 
 
