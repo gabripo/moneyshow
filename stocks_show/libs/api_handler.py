@@ -21,8 +21,8 @@ def get_stock_from_api(
     elif apiName == "yfinance":
         stockData["ticker"] = tickerInput
 
-        stockDataYfTicker = yf.Ticker(tickerInput)
-        stockDataDaily = stockDataYfTicker.history(interval="1d", period="ytd")
+        apiOptions = api_yfinance_options(tickerInput, "daily", nLastDaysToLoad)
+        stockDataDaily = api_yfinance_call(**apiOptions)
         if len(stockDataDaily) != 0:
             stockData["prices"] = get_stock_timeseries_yfinance(stockDataDaily)
 
@@ -91,6 +91,27 @@ def get_stock_timeseries_alphavantage(
             )
     sorted(data, key=lambda x: x["date"])
     return data
+
+
+def api_yfinance_call(tickerInput, interval="1d", period=100):
+    stockDataYfTicker = yf.Ticker(tickerInput)
+    stockDataDaily = stockDataYfTicker.history(interval=interval, period="max")
+
+    stockDataDaily = stockDataDaily.tail(period)
+    return stockDataDaily
+
+
+def api_yfinance_options(
+    tickerInput, stockFrequency="daily", nLastDaysToLoad=100
+) -> dict:
+    stockFrequenciesMap = {
+        "daily": "1d",
+        "weekly": "1wk",
+        "monthly": "1mo",
+    }
+    interval = stockFrequenciesMap.get(stockFrequency, "TIME_SERIES_DAILY")
+
+    return {"tickerInput": tickerInput, "interval": interval, "period": nLastDaysToLoad}
 
 
 def get_stock_timeseries_yfinance(stockDataYfinance) -> list[dict]:
