@@ -3,14 +3,17 @@ from stocks_show.libs.parse_secrets import ALPHA_ADVANTAGE_API_KEY
 import yfinance as yf
 
 
-def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
+def get_stock_from_api(
+    tickerInput, apiName="alphavantage", nLastDaysToLoad=100
+) -> dict:
     stockData = {}
     if apiName == "alphavantage":
         stockData["ticker"] = tickerInput
 
-        stockDataDaily = api_alphavantage_call(
-            tickerInput, ALPHA_ADVANTAGE_API_KEY, "TIME_SERIES_DAILY"
+        apiOptions = api_alphavantage_options(
+            tickerInput, ALPHA_ADVANTAGE_API_KEY, "daily", nLastDaysToLoad
         )
+        stockDataDaily = api_alphavantage_call(**apiOptions)
         if "Time Series (Daily)" in stockDataDaily:
             stockData["prices"] = get_stock_timeseries_alphavantage(
                 stockDataDaily, "Time Series (Daily)"
@@ -37,9 +40,37 @@ def is_valid_api_data(stockData, groups=["prices", "sma"]) -> bool:
     return validApi
 
 
-def api_alphavantage_call(tickerInput, apiKey, dataType="TIME_SERIES_DAILY"):
-    query = f"https://www.alphavantage.co/query?function={dataType}&symbol={tickerInput}&apikey={apiKey}"
+def api_alphavantage_call(
+    tickerInput, apiKey, dataType="TIME_SERIES_DAILY", outputSize="full"
+):
+    query = f"https://www.alphavantage.co/query?function={dataType}&symbol={tickerInput}&apikey={apiKey}&outputsize={outputSize}"
     return requests.get(query).json()
+
+
+def api_alphavantage_options(
+    tickerInput, apiKey, stockFrequency="daily", nLastDaysToLoad=100
+) -> dict:
+    if nLastDaysToLoad <= 100:
+        outputSize = "compact"
+    else:
+        outputSize = "full"
+
+    stockFrequenciesMap = {
+        "daily": "TIME_SERIES_DAILY",
+        "daily_adjusted": "TIME_SERIES_DAILY_ADJUSTED",
+        "weekly": "TIME_SERIES_WEEKLY",
+        "weekly_adjusted": "TIME_SERIES_WEEKLY_ADJUSTED",
+        "monthly": "TIME_SERIES_MONTHLY",
+        "monthly_adjusted": "TIME_SERIES_MONTHLY_ADJUSTED",
+    }
+    dataType = stockFrequenciesMap.get(stockFrequency, "TIME_SERIES_DAILY")
+
+    return {
+        "tickerInput": tickerInput,
+        "apiKey": apiKey,
+        "dataType": dataType,
+        "outputSize": outputSize,
+    }
 
 
 def get_stock_timeseries_alphavantage(
