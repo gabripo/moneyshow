@@ -22,6 +22,8 @@ def get_stock_from_api(tickerInput, apiName="alphavantage") -> dict:
         stockDataDaily = stockDataYfTicker.history(interval="1d", period="ytd")
         if len(stockDataDaily) != 0:
             stockData["prices"] = get_stock_timeseries_yfinance(stockDataDaily)
+
+    sort_stock_data_by_date(stockData)
     return stockData
 
 
@@ -74,3 +76,9 @@ def get_stock_timeseries_yfinance(stockDataYfinance) -> list[dict]:
             }
         )
     return data
+
+
+def sort_stock_data_by_date(stockData) -> None:
+    if "prices" not in stockData:
+        return
+    stockData["prices"] = sorted(stockData["prices"], key=lambda x: x["date"])

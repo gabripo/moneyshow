@@ -1,12 +1,16 @@
 import os
 import json
-from stocks_show.libs.api_handler import get_stock_timeseries_alphavantage
+from stocks_show.libs.api_handler import (
+    get_stock_timeseries_alphavantage,
+    sort_stock_data_by_date,
+)
 
 
 def get_default_stock_data(tickerInput):
     stockData = {}
     stockData["ticker"] = tickerInput
     stockData["prices"] = get_default_stock_data_prices()
+    sort_stock_data_by_date(stockData)
     return stockData
 
 
