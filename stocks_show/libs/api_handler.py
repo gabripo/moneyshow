@@ -56,6 +56,7 @@ def get_stock_timeseries_alphavantage(
                     "volume": val["5. volume"],
                 }
             )
+    sorted(data, key=lambda x: x["date"])
     return data
 
 
