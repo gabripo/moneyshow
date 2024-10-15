@@ -3,6 +3,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import RandomizedSearchCV
 import numpy as np
 from stocks_predict.common_regr import (
+    predict_future_days,
     timeshift_pandaseries_remove_lags,
     timeshift_pandaseries_to_dataframe,
 )
@@ -62,19 +63,7 @@ def predict_day_element(
         bestPipeline = DecisionTreeRegressor()
         bestPipeline.fit(X_train, y_train)
 
-    y_pred = []
-    lastDay_X = X_train.tail(1).copy()
-    lastDay_y = y_train.iloc[-1]
-    for _ in range(nDaysToPredict):
-        newDay_X = lastDay_X.shift(axis=1)
-        newDay_X["y_lag_1"] = lastDay_y
-
-        predictedValue = bestPipeline.predict(newDay_X)[0]
-        y_pred.append(predictedValue)
-
-        lastDay_X = newDay_X
-        lastDay_y = predictedValue
-
+    y_pred = predict_future_days(X_train, y_train, nDaysToPredict, bestPipeline)
     return y_pred
 
 

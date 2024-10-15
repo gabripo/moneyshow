@@ -44,6 +44,27 @@ def build_pipeline(model, params: dict) -> Pipeline:
     return pipeline
 
 
+def predict_future_days(
+    X_train: pd.DataFrame,
+    y_train: pd.Series,
+    nDaysToPredict: int,
+    bestPipeline: Pipeline,
+) -> list:
+    y_pred = []
+    lastDay_X = X_train.tail(1).copy()
+    lastDay_y = y_train.iloc[-1]
+    for _ in range(nDaysToPredict):
+        newDay_X = lastDay_X.shift(axis=1)
+        newDay_X["y_lag_1"] = lastDay_y
+
+        predictedValue = bestPipeline.predict(newDay_X)[0]
+        y_pred.append(predictedValue)
+
+        lastDay_X = newDay_X
+        lastDay_y = predictedValue
+    return y_pred
+
+
 def timeshift_pandaseries_to_dataframe(yToShift: pd.Series, nLags: int) -> pd.DataFrame:
     resDf = pd.DataFrame()
     for lag in range(1, nLags + 1):
