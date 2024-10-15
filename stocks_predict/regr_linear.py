@@ -4,7 +4,6 @@ import numpy as np
 from stocks_predict.common_regr import (
     build_pipeline,
     evaluate_model_cross_validation,
-    generate_futureDates,
     initialize_prediction_df,
 )
 

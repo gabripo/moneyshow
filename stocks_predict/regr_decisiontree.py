@@ -8,7 +8,6 @@ from stocks_predict.common_regr import (
 )
 from stocks_predict.regr_linear import (
     build_pipeline,
-    generate_futureDates,
     initialize_prediction_df,
 )
 

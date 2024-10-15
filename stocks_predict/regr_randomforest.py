@@ -4,7 +4,6 @@ from sklearn.model_selection import RandomizedSearchCV
 import numpy as np
 from stocks_predict.regr_linear import (
     build_pipeline,
-    generate_futureDates,
     initialize_prediction_df,
 )
 
