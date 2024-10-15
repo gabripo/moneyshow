@@ -18,8 +18,9 @@ def predictor_decisiontree(
     nDaysToPredict=10,
     useCrossValidation=True,
     appendToInitDf=False,
-    timeLagSamples=5,
+    **kwargs,
 ) -> pd.DataFrame:
+    timeLagSamples = kwargs.get("timeLagSamples", 10)
     nDays = len(data)
 
     lastDay = data.index[-1]

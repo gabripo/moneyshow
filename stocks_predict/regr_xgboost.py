@@ -10,7 +10,11 @@ from stocks_predict.regr_linear import (
 
 
 def predictor_xgboost(
-    data: pd.DataFrame, nDaysToPredict=10, useCrossValidation=True, appendToInitDf=False
+    data: pd.DataFrame,
+    nDaysToPredict=10,
+    useCrossValidation=True,
+    appendToInitDf=False,
+    **kwargs,
 ) -> pd.DataFrame:
     dates = data.index
     nDays = len(data)
