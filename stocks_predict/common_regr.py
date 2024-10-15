@@ -42,12 +42,16 @@ def build_pipeline(model, params: dict) -> Pipeline:
     return pipeline
 
 
-def timeshift_pandaseries(yToShift: pd.Series, nLags: int, nanFill=0.0) -> pd.DataFrame:
+def timeshift_pandaseries_to_dataframe(yToShift: pd.Series, nLags: int) -> pd.DataFrame:
     resDf = pd.DataFrame()
     for lag in range(1, nLags + 1):
         featureName = f"y_lag_{lag}"
         resDf[featureName] = yToShift.shift(lag)
 
     # filling NaN values due to timeshift
-    resDf = resDf.fillna(nanFill)
+    resDf.dropna(inplace=True)
     return resDf
+
+
+def timeshift_pandaseries_remove_lags(y: pd.Series, nSamplesToRemove: int) -> None:
+    y.drop(y.tail(nSamplesToRemove).index, inplace=True)

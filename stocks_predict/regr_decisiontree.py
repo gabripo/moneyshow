@@ -2,7 +2,10 @@ import pandas as pd
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import RandomizedSearchCV
 import numpy as np
-from stocks_predict.common_regr import timeshift_pandaseries
+from stocks_predict.common_regr import (
+    timeshift_pandaseries_remove_lags,
+    timeshift_pandaseries_to_dataframe,
+)
 from stocks_predict.regr_linear import (
     build_pipeline,
     generate_futureDates,
@@ -27,12 +30,15 @@ def predictor_decisiontree(
     elementsToPredict = ("open", "high", "low", "close")
     for key in elementsToPredict:
         print(f"Predicting {key} for the following {nDaysToPredict}...")
-        y = data[key]
-        X = timeshift_pandaseries(y, timeLagSamples)
-        # X["index"] = range(nDays)
+        y_train = data[key]
+        X_train = timeshift_pandaseries_to_dataframe(y_train, timeLagSamples)
+        timeshift_pandaseries_remove_lags(y_train, timeLagSamples)
 
         predictionDf[key] = predict_day_element(
-            X, y, predictionDf[["index"]], useCrossValidation
+            X_train,
+            y_train,
+            nDaysToPredict,
+            useCrossValidation,
         )
         print(f"Prediction of {key} for the following {nDaysToPredict} concluded!")
 
@@ -47,9 +53,8 @@ def predictor_decisiontree(
 def predict_day_element(
     X_train: pd.DataFrame,
     y_train: pd.Series,
-    X_pred: pd.DataFrame,
+    nDaysToPredict: int,
     useCrossValidation=True,
-    nDaysToPredict=5,
 ) -> np.ndarray:
     if useCrossValidation:
         bestParams = model_best_parameters(DecisionTreeRegressor(), X_train, y_train)
@@ -60,19 +65,18 @@ def predict_day_element(
         bestPipeline = DecisionTreeRegressor()
         bestPipeline.fit(X_train, y_train)
 
-    futureDates = X_pred.index  # for now, directly the vector in the future
-    lastDay = X_train.iloc[-1].copy()
     y_pred = []
-    for date in futureDates:
-        newDay = {
-            f"y_lag_{lag}": lastDay[f"y_lag_{lag-1}"]
-            for lag in range(2, nDaysToPredict + 1)
-        }
-        newDay["y_lag_1"] = bestPipeline.predict(
-            [lastDay[[f"y_lag_{lag}" for lag in range(1, nDaysToPredict + 1)]]]
-        )[0]
-        newDay["y"] = newDay["y_lag_1"]
-        y_pred.append(newDay["y"])
+    lastDay_X = X_train.tail(1).copy()
+    lastDay_y = y_train.iloc[-1]
+    for _ in range(nDaysToPredict):
+        newDay_X = lastDay_X.shift(axis=1)
+        newDay_X["y_lag_1"] = lastDay_y
+
+        predictedValue = bestPipeline.predict(newDay_X)[0]
+        y_pred.append(predictedValue)
+
+        lastDay_X = newDay_X
+        lastDay_y = predictedValue
 
     return y_pred
 

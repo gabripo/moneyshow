@@ -26,7 +26,7 @@ def forward_to_prediction(
         "nDaysToPredict": predictionDays,
         "useCrossValidation": True,
         "appendToInitDf": False,
-        "timeLagSamples": 5,
+        "timeLagSamples": 10,
     }
 
     prediction_function = predictorMapping.get(predictionMode)
