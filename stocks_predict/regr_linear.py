@@ -10,6 +10,7 @@ from stocks_predict.common_regr import (
 
 def predictor_linear(
     data: pd.DataFrame,
+    elementsToPredict: tuple,
     nDaysToPredict=10,
     useCrossValidation=True,
     appendToInitDf=False,
@@ -21,7 +22,6 @@ def predictor_linear(
     predictionDf = initialize_prediction_df(lastDate, nDatesAvailable, nDaysToPredict)
 
     X = pd.DataFrame({"index": range(nDatesAvailable)}, index=dates)
-    elementsToPredict = ("open", "high", "low", "close")
     for key in elementsToPredict:
         print(f"Predicting {key} for the following {nDaysToPredict}...")
         predictionDf[key] = predict_day_element(

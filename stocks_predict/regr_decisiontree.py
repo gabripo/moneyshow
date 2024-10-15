@@ -15,6 +15,7 @@ from stocks_predict.regr_linear import (
 
 def predictor_decisiontree(
     data: pd.DataFrame,
+    elementsToPredict: tuple,
     nDaysToPredict=10,
     useCrossValidation=True,
     appendToInitDf=False,
@@ -25,7 +26,6 @@ def predictor_decisiontree(
     lastDate = data.index[-1]
     predictionDf = initialize_prediction_df(lastDate, nDatesAvailable, nDaysToPredict)
 
-    elementsToPredict = ("open", "high", "low", "close")
     for key in elementsToPredict:
         print(f"Predicting {key} for the following {nDaysToPredict}...")
         y_train = data[key]

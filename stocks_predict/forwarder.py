@@ -23,6 +23,7 @@ def forward_to_prediction(
     }
     predictorArgs = {
         "data": stockDataFrame,
+        "elementsToPredict": ("open", "high", "low", "close"),
         "nDaysToPredict": predictionDays,
         "useCrossValidation": True,
         "appendToInitDf": False,
