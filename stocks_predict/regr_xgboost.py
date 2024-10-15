@@ -2,6 +2,11 @@ import pandas as pd
 from xgboost import XGBRegressor
 from sklearn.model_selection import RandomizedSearchCV
 import numpy as np
+from stocks_predict.common_regr import (
+    predict_future_days,
+    timeshift_pandaseries_remove_lags,
+    timeshift_pandaseries_to_dataframe,
+)
 from stocks_predict.regr_linear import (
     build_pipeline,
     initialize_prediction_df,
@@ -16,17 +21,22 @@ def predictor_xgboost(
     appendToInitDf=False,
     **kwargs,
 ) -> pd.DataFrame:
-    dates = data.index
+    timeLagSamples = kwargs.get("timeLagSamples", 10)
     nDatesAvailable = len(data)
-    X = pd.DataFrame({"index": range(nDatesAvailable)}, index=dates)
-    # TODO add time lag!
     lastDate = data.index[-1]
     predictionDf = initialize_prediction_df(lastDate, nDatesAvailable, nDaysToPredict)
 
     for key in elementsToPredict:
         print(f"Predicting {key} for the following {nDaysToPredict}...")
+        y_train = data[key]
+        X_train = timeshift_pandaseries_to_dataframe(y_train, timeLagSamples)
+        timeshift_pandaseries_remove_lags(y_train, timeLagSamples)
+
         predictionDf[key] = predict_day_element(
-            X, data[key], predictionDf[["index"]], useCrossValidation
+            X_train,
+            y_train,
+            nDaysToPredict,
+            useCrossValidation,
         )
         print(f"Prediction of {key} for the following {nDaysToPredict} concluded!")
 
@@ -41,19 +51,17 @@ def predictor_xgboost(
 def predict_day_element(
     X_train: pd.DataFrame,
     y_train: pd.Series,
-    X_pred: pd.DataFrame,
+    nDaysToPredict: int,
     useCrossValidation=True,
 ) -> np.ndarray:
     if useCrossValidation:
         bestParams = model_best_parameters(XGBRegressor(), X_train, y_train)
-        bestPipeline = build_pipeline(XGBRegressor, bestParams)
-        bestPipeline.fit(X_train, y_train)
-        y_pred = bestPipeline.predict(X_pred)
     else:
-        # 1-shot, training over the entire data-set
-        model = XGBRegressor()
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_pred)
+        bestParams = {}
+    bestPipeline = build_pipeline(XGBRegressor, bestParams)
+    bestPipeline.fit(X_train, y_train)
+
+    y_pred = predict_future_days(X_train, y_train, nDaysToPredict, bestPipeline)
     return y_pred
 
 
