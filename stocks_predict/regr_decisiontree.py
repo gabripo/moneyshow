@@ -56,12 +56,10 @@ def predict_day_element(
 ) -> np.ndarray:
     if useCrossValidation:
         bestParams = model_best_parameters(DecisionTreeRegressor(), X_train, y_train)
-        bestPipeline = build_pipeline(DecisionTreeRegressor, bestParams)
-        bestPipeline.fit(X_train, y_train)
     else:
-        # 1-shot, training over the entire data-set
-        bestPipeline = DecisionTreeRegressor()
-        bestPipeline.fit(X_train, y_train)
+        bestParams = {}
+    bestPipeline = build_pipeline(DecisionTreeRegressor, bestParams)
+    bestPipeline.fit(X_train, y_train)
 
     y_pred = predict_future_days(X_train, y_train, nDaysToPredict, bestPipeline)
     return y_pred
