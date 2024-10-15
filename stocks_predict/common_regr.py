@@ -4,11 +4,11 @@ from sklearn.model_selection import cross_val_score
 from sklearn.pipeline import Pipeline
 
 
-def initialize_prediction_df(
-    datesArray: pd.DatetimeIndex, startIndex: int
-) -> pd.DataFrame:
-    predictionDf = pd.DataFrame({"date": datesArray})
-    predictionDf["index"] = np.arange(startIndex, startIndex + len(predictionDf))
+def initialize_prediction_df(lastDate, nDatesAvailable, nDaysToPredict) -> pd.DataFrame:
+    futureDates = generate_futureDates(lastDate, nDaysToPredict)
+
+    predictionDf = pd.DataFrame({"date": futureDates})
+    predictionDf["index"] = np.arange(nDatesAvailable, nDatesAvailable + nDaysToPredict)
     predictionDf.set_index("date", inplace=True)
     return predictionDf
 

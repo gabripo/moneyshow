@@ -17,12 +17,11 @@ def predictor_xgboost(
     **kwargs,
 ) -> pd.DataFrame:
     dates = data.index
-    nDays = len(data)
-    X = pd.DataFrame({"index": range(nDays)}, index=dates)
+    nDatesAvailable = len(data)
+    X = pd.DataFrame({"index": range(nDatesAvailable)}, index=dates)
     # TODO add time lag!
-    lastDay = data.index[-1]
-    futureDates = generate_futureDates(lastDay, nDaysToPredict)
-    predictionDf = initialize_prediction_df(futureDates, nDays)
+    lastDate = data.index[-1]
+    predictionDf = initialize_prediction_df(lastDate, nDatesAvailable, nDaysToPredict)
 
     elementsToPredict = ("open", "high", "low", "close")
     for key in elementsToPredict:
@@ -33,7 +32,7 @@ def predictor_xgboost(
         print(f"Prediction of {key} for the following {nDaysToPredict} concluded!")
 
     if appendToInitDf:
-        data["index"] = np.arange(nDays)  # needed to append values afterwards
+        data["index"] = np.arange(nDatesAvailable)  # needed to append values afterwards
         data = pd.concat([data, predictionDf])
         return data
     else:

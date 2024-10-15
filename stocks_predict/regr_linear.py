@@ -17,13 +17,11 @@ def predictor_linear(
     **kwargs,
 ) -> pd.DataFrame:
     dates = data.index
-    nDays = len(data)
-    X = pd.DataFrame({"index": range(nDays)}, index=dates)
+    nDatesAvailable = len(data)
+    lastDate = data.index[-1]
+    predictionDf = initialize_prediction_df(lastDate, nDatesAvailable, nDaysToPredict)
 
-    lastDay = data.index[-1]
-    futureDates = generate_futureDates(lastDay, nDaysToPredict)
-    predictionDf = initialize_prediction_df(futureDates, nDays)
-
+    X = pd.DataFrame({"index": range(nDatesAvailable)}, index=dates)
     elementsToPredict = ("open", "high", "low", "close")
     for key in elementsToPredict:
         print(f"Predicting {key} for the following {nDaysToPredict}...")
@@ -33,7 +31,7 @@ def predictor_linear(
         print(f"Prediction of {key} for the following {nDaysToPredict} concluded!")
 
     if appendToInitDf:
-        data["index"] = np.arange(nDays)  # needed to append values afterwards
+        data["index"] = np.arange(nDatesAvailable)  # needed to append values afterwards
         data = pd.concat([data, predictionDf])
         return data
     else:
