@@ -4,7 +4,9 @@ from sklearn.model_selection import cross_val_score
 from sklearn.pipeline import Pipeline
 
 
-def initialize_prediction_df(lastDate, nDatesAvailable, nDaysToPredict) -> pd.DataFrame:
+def initialize_prediction_df(
+    lastDate: pd.Timestamp, nDatesAvailable: int, nDaysToPredict: int
+) -> pd.DataFrame:
     futureDates = generate_futureDates(lastDate, nDaysToPredict)
 
     predictionDf = pd.DataFrame({"date": futureDates})
