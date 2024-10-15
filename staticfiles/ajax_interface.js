@@ -123,7 +123,6 @@ function update_plot(res) {
             },
             tooltip: {
                 enabled: true,
-                mode: 'nearest',
                 intersect: false,
                 callbacks: {
                     label: function (context) {
@@ -146,6 +145,9 @@ function update_plot(res) {
                         enabled: true
                     },
                     mode: 'xy',
+                    drag: {
+                        enabled: true
+                    }
                 }
             },
         },
