@@ -28,11 +28,10 @@ def forward_to_prediction(
         "appendToInitDf": False,
     }
     predictorKwArgs = {"timeLagSamples": 10}
-    functionArgs = {**predictorArgs, **predictorKwArgs}
 
     prediction_function = predictorMapping.get(predictionMode)
     if prediction_function:
-        predictionDataFrame = prediction_function(**predictorArgs)
+        predictionDataFrame = prediction_function(**predictorArgs, **predictorKwArgs)
     else:
         predictionDataFrame = pd.DataFrame()
 
