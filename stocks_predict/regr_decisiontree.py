@@ -20,7 +20,6 @@ def predictor_decisiontree(
     appendToInitDf=False,
     timeLagSamples=5,
 ) -> pd.DataFrame:
-    dates = data.index
     nDays = len(data)
 
     lastDay = data.index[-1]
