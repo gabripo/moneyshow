@@ -57,7 +57,7 @@ def predict_day_element(
     if useCrossValidation:
         bestParams = model_best_parameters(DecisionTreeRegressor(), X_train, y_train)
     else:
-        bestParams = {}
+        bestParams = {}  # default parameters will be used
     bestPipeline = build_pipeline(DecisionTreeRegressor, bestParams)
     bestPipeline.fit(X_train, y_train)
 
