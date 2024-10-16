@@ -82,12 +82,11 @@ def model_best_parameters(model, X: pd.DataFrame, y: pd.Series) -> dict:
 def model_parameters_combinations_xgboost() -> list[dict]:
     parametersGridXGBRegressor = {
         "n_estimators": range(50, 500, 50),
-        "max_depth": range(3, 15, 2),
-        "learning_rate": np.arange(0.01, 0.3, 0.05),
+        "learning_rate": np.arange(0.01, 0.2, 0.01),
+        "max_depth": range(3, 10, 1),
+        "min_child_weight": range(1, 6, 1),
         "subsample": np.arange(0.5, 1.0, 0.1),
         "colsample_bytree": np.arange(0.5, 1.0, 0.1),
-        "gamma": np.arange(0, 0.5, 0.1),
-        "reg_alpha": np.arange(0, 1, 0.1),
-        "reg_lambda": np.arange(0, 1, 0.1),
+        "gamma": np.arange(0, 0.5, 0.05),
     }
     return parametersGridXGBRegressor
