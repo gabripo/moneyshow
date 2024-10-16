@@ -1,4 +1,8 @@
-from stocks_predict.constants import DEFAULT_PREDICTION_DAYS, DEFAULT_STOCK_SYMBOL
+from stocks_predict.constants import (
+    DEFAULT_PREDICTION_DAYS,
+    DEFAULT_PREDICTION_LAG_DAYS,
+    DEFAULT_STOCK_SYMBOL,
+)
 
 
 def is_ajax(request) -> bool:
@@ -39,4 +43,11 @@ def get_prediction_days_from_request(request) -> str:
     predictionDays = request.POST.get("predDays", DEFAULT_PREDICTION_DAYS)
     if not predictionDays:
         predictionDays = DEFAULT_PREDICTION_DAYS
+    return int(predictionDays)
+
+
+def get_prediction_lag_days_from_request(request) -> str:
+    predictionDays = request.POST.get("predDaysLag", DEFAULT_PREDICTION_LAG_DAYS)
+    if not predictionDays:
+        predictionDays = DEFAULT_PREDICTION_LAG_DAYS
     return int(predictionDays)

@@ -31,14 +31,15 @@ function ajax_call_generic(targetUrl, dataInput) {
     });
 }
 
-function ajax_call_predict(targetUrl, tickerText, predictMethod, predictionDays) {
+function ajax_call_predict(targetUrl, tickerText, predictMethod, predictionDays, predictionLagDays) {
     $.ajax({
         type: "POST",
         url: targetUrl,
         data: {
             'ticker': tickerText,
             'predMet': predictMethod,
-            'predDays': predictionDays
+            'predDays': predictionDays,
+            'predDaysLag': predictionLagDays
         },
         success: function (res, status) {
             update_plot(res)

@@ -6,6 +6,7 @@ from stocks_predict.sanitizer import sanitize_prediction
 from stocks_show.libs.ajax_parser import (
     db_to_update,
     get_prediction_days_from_request,
+    get_prediction_lag_days_from_request,
     get_prediction_method_from_generic_request,
     get_ticker_from_request,
     is_ajax,
@@ -86,10 +87,11 @@ def predict_stock_data(request):
         else:
             ticker = get_ticker_from_request(request)
             predictionDays = get_prediction_days_from_request(request)
+            predictionLagDays = get_prediction_lag_days_from_request(request)
 
             stockData = get_stock_from_db(ticker)
             predictionWorked = forward_to_prediction(
-                stockData, predictionMethod, predictionDays
+                stockData, predictionMethod, predictionDays, predictionLagDays
             )
             if predictionWorked:
                 sanitize_prediction(stockData)

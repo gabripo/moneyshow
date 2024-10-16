@@ -7,7 +7,7 @@ from stocks_predict.regr_xgboost import predictor_xgboost
 
 
 def forward_to_prediction(
-    stockData: dict, predictionMode="linear", predictionDays=10
+    stockData: dict, predictionMode="linear", predictionDays=10, predictionLagDays=10
 ) -> bool:
     """
     function to forward stock data to a prediction function
@@ -28,7 +28,7 @@ def forward_to_prediction(
         "useCrossValidation": True,
         "appendToInitDf": False,
     }
-    predictorKwArgs = {"timeLagSamples": 10}
+    predictorKwArgs = {"timeLagSamples": predictionLagDays}
 
     prediction_function = predictorMapping.get(predictionMode)
     if prediction_function:
