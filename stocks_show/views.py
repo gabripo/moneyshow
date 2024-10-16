@@ -86,13 +86,15 @@ def predict_stock_data(request):
             message = f"Invalid prediction method {predictionMethod} selected! No prediction will occur"
         else:
             ticker = get_ticker_from_request(request)
-            predictionDays = get_prediction_days_from_request(request)
-            predictionLagDays = get_prediction_lag_days_from_request(request)
-
             stockData = get_stock_from_db(ticker)
-            predictionWorked = forward_to_prediction(
-                stockData, predictionMethod, predictionDays, predictionLagDays
-            )
+
+            predictionArgs = {
+                "stockData": stockData,
+                "predictionMode": predictionMethod,
+                "predictionDays": get_prediction_days_from_request(request),
+                "predictionLagDays": get_prediction_lag_days_from_request(request),
+            }
+            predictionWorked = forward_to_prediction(**predictionArgs)
             if predictionWorked:
                 sanitize_prediction(stockData)
                 print(f"Prediction of {ticker} achieved with method {predictionMethod}")
