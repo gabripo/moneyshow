@@ -1,6 +1,7 @@
 import requests
 from stocks_show.libs.parse_secrets import ALPHA_ADVANTAGE_API_KEY
 import yfinance as yf
+import numpy as np
 
 
 def get_stock_from_api(
@@ -82,11 +83,11 @@ def get_stock_timeseries_alphavantage(
                 data.append(
                     {
                         "date": key,
-                        "open": val["1. open"],
-                        "high": val["2. high"],
-                        "low": val["3. low"],
-                        "close": val["4. close"],
-                        "volume": val["5. volume"],
+                        "open": np.float64(val["1. open"]),
+                        "high": np.float64(val["2. high"]),
+                        "low": np.float64(val["3. low"]),
+                        "close": np.float64(val["4. close"]),
+                        "volume": np.float64(val["5. volume"]),
                     }
                 )
         sorted(data, key=lambda x: x["date"])
