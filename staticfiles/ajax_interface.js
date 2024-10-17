@@ -137,6 +137,17 @@ function update_plot(res) {
                     }
                 }
             },
+            annotation: {
+                annotations: {
+                    verticalLine: {
+                        type: 'line',
+                        xMin: get_today_date(),
+                        xMax: get_today_date(),
+                        borderColor: 'red',
+                        borderWidth: 2
+                    }
+                }
+            },
             zoom: {
                 zoom: {
                     pinch: {
@@ -187,6 +198,18 @@ function format_data_priceseries(priceSeries, fieldName) {
     )
 
     return dataFormatted;
+}
+
+
+function get_today_date() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    const todayDateFormatted = `${year}-${month}-${day}`;
+
+    return todayDateFormatted;
 }
 
 function show_text_below_canvas(textToShow) {
