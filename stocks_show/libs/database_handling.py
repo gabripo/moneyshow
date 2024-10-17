@@ -1,4 +1,5 @@
 import json
+from stocks_predict.constants import DEFAULT_DAYS_TO_DOWNLOAD
 from stocks_show.libs.dummy_data import get_default_stock_data
 from stocks_show.models import StockData
 
@@ -14,7 +15,7 @@ def write_data_to_db(tickerInput, stockData) -> None:
     instance.save()
 
 
-def get_stock_from_db(tickerInput) -> dict:
+def get_stock_from_db(tickerInput, nDaysToLoad=DEFAULT_DAYS_TO_DOWNLOAD) -> dict:
     """
     Django's way of saying SELECT * FROM StockData WHERE ticker = tickerInput
     """
@@ -27,6 +28,9 @@ def get_stock_from_db(tickerInput) -> dict:
     if not entry:
         return {}
     entry_loaded = json.loads(entry.prices)
+
+    nLastDaysToLoad = min(nDaysToLoad, len(entry_loaded["prices"]))
+    entry_loaded["prices"] = entry_loaded["prices"][-nLastDaysToLoad:]
     return entry_loaded
 
 

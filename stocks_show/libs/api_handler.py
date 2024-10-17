@@ -1,11 +1,12 @@
 import requests
+from stocks_predict.constants import DEFAULT_DAYS_TO_DOWNLOAD
 from stocks_show.libs.parse_secrets import ALPHA_ADVANTAGE_API_KEY
 import yfinance as yf
 import numpy as np
 
 
 def get_stock_from_api(
-    tickerInput, apiName="alphavantage", nLastDaysToLoad=100
+    tickerInput, apiName="alphavantage", nLastDaysToLoad=DEFAULT_DAYS_TO_DOWNLOAD
 ) -> dict:
     stockData = {}
     if apiName == "alphavantage":
@@ -48,7 +49,10 @@ def api_alphavantage_call(
 
 
 def api_alphavantage_options(
-    tickerInput, apiKey, stockFrequency="daily", nLastDaysToLoad=100
+    tickerInput,
+    apiKey,
+    stockFrequency="daily",
+    nLastDaysToLoad=DEFAULT_DAYS_TO_DOWNLOAD,
 ) -> dict:
     if nLastDaysToLoad <= 100:
         outputSize = "compact"
@@ -97,7 +101,7 @@ def get_stock_timeseries_alphavantage(
     return data
 
 
-def api_yfinance_call(tickerInput, interval="1d", period=100):
+def api_yfinance_call(tickerInput, interval="1d", period=DEFAULT_DAYS_TO_DOWNLOAD):
     stockDataYfTicker = yf.Ticker(tickerInput)
     stockDataDaily = stockDataYfTicker.history(interval=interval, period="max")
 
@@ -106,7 +110,7 @@ def api_yfinance_call(tickerInput, interval="1d", period=100):
 
 
 def api_yfinance_options(
-    tickerInput, stockFrequency="daily", nLastDaysToLoad=100
+    tickerInput, stockFrequency="daily", nLastDaysToLoad=DEFAULT_DAYS_TO_DOWNLOAD
 ) -> dict:
     stockFrequenciesMap = {
         "daily": "1d",

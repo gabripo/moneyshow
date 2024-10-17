@@ -1,6 +1,6 @@
 import { update_plot, show_text_below_canvas, toggle_lag_days_dropdown } from "./helper_functions.js";
 
-export function ajax_call_show(targetUrl, tickerText, checkboxVal, apiProvider) {
+export function ajax_call_show(targetUrl, tickerText, checkboxVal, apiProvider, daysToDownload) {
     $.ajax({
         type: "POST",
         url: targetUrl,
@@ -8,6 +8,7 @@ export function ajax_call_show(targetUrl, tickerText, checkboxVal, apiProvider) 
             'ticker': tickerText,
             'update': checkboxVal,
             'api': apiProvider,
+            'days': daysToDownload,
         },
         success: function (res, status) {
             if (targetUrl === "/get_stock_data/") {

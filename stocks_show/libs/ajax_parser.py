@@ -1,4 +1,5 @@
 from stocks_predict.constants import (
+    DEFAULT_DAYS_TO_DOWNLOAD,
     DEFAULT_PREDICTION_DAYS,
     DEFAULT_PREDICTION_LAG_DAYS,
     DEFAULT_STOCK_SYMBOL,
@@ -30,6 +31,11 @@ def db_to_update(request, useDatabase=True) -> bool:
 def get_api_name_from_request(request) -> str:
     apiName = request.POST.get("api", "database")
     return apiName
+
+
+def get_days_from_request(request) -> int:
+    daysToDownload = int(request.POST.get("days", DEFAULT_DAYS_TO_DOWNLOAD))
+    return daysToDownload
 
 
 def get_prediction_method_from_generic_request(

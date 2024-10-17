@@ -5,6 +5,7 @@ from stocks_predict.forwarder import forward_to_prediction
 from stocks_predict.sanitizer import sanitize_prediction
 from stocks_show.libs.ajax_parser import (
     db_to_update,
+    get_days_from_request,
     get_prediction_days_from_request,
     get_prediction_lag_days_from_request,
     get_prediction_method_from_generic_request,
@@ -42,11 +43,12 @@ def get_stock_data(request):
         tickerInput = get_ticker_from_request(request)
         dbToUpdate = db_to_update(request, DATABASE_ACCESS)
         apiName = get_api_name_from_request(request)
+        daysToDownload = get_days_from_request(request)
 
         if DATABASE_ACCESS and is_stock_in_db(tickerInput) and not dbToUpdate:
-            stockData = get_stock_from_db(tickerInput)
+            stockData = get_stock_from_db(tickerInput, daysToDownload)
         else:
-            stockData = get_stock_from_api(tickerInput, apiName)
+            stockData = get_stock_from_api(tickerInput, apiName, daysToDownload)
             if not is_valid_api_data(stockData):
                 print("Fall back to stock data, as data invalid from the APIs...")
                 stockData = get_default_stock_data(tickerInput)
