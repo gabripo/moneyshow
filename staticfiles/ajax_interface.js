@@ -194,3 +194,17 @@ function show_text_below_canvas(textToShow) {
 
     textElement.innerText = textToShow;
 }
+
+
+function toggle_lag_days_dropdown() {
+    const mainDropdown = document.getElementById('selection_ml');
+    const secondaryDropdownContainer = document.getElementById('prediction_lag_days_dropdown');
+
+    const regressorRequiringLagDays = ['decisiontree', 'randomforest', 'xgboost'];
+
+    if (regressorRequiringLagDays.includes(mainDropdown.value)) {
+        secondaryDropdownContainer.classList.remove('hidden');
+    } else {
+        secondaryDropdownContainer.classList.add('hidden');
+    }
+}

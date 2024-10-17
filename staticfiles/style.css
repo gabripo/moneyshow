@@ -87,3 +87,7 @@ form {
 	margin: 0 auto;
 	/* Center the canvas horizontally */
 }
+
+.hidden {
+	display: none;
+}
