@@ -13,15 +13,19 @@ h2 {
 
 #controls {
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	flex-wrap: wrap;
 	max-width: 800px;
 	margin: auto;
+	border: 1px solid #ccc;
 }
 
 .column {
-	flex: 1;
-	min-width: 200px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	width: 45%;
+	/* Adjust as needed */
 	padding: 10px;
 }
 
