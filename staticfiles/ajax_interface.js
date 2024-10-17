@@ -139,9 +139,6 @@ function update_plot(res) {
             },
             zoom: {
                 zoom: {
-                    wheel: {
-                        enabled: true,
-                    },
                     pinch: {
                         enabled: true
                     },
