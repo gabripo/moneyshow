@@ -21,7 +21,8 @@
     <!-- vertical line and different background in plot-->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <!-- AJAX-related functions -->
-    <script src="{% static 'ajax_interface.js' %}"></script>
+    <script type="module" src="{% static 'ajax_interface.js' %}"></script>
+    <script type="module" src="{% static 'helper_functions.js' %}"></script>
 
     <title>Stock Visualizer</title>
 </head>
@@ -52,7 +53,7 @@
     <div id="controls">
         <div class="column">
             <label for="selection_ml">Regressor:</label>
-            <select name="selection_ml" id="selection_ml" onchange="toggle_lag_days_dropdown()">
+            <select name="selection_ml" id="selection_ml" onchange="window.toggle_lag_days_dropdown()">
                 <option value="linear">Linear Regression</option>
                 <option value="decisiontree">Decision Tree Regression</option>
                 <option value="randomforest">Random Forest</option>
@@ -87,7 +88,9 @@
     <br>
     <button id="clear-db-btn">Clear Database</button>
 
-    <script>
+    <script type="module">
+        import { ajax_call_show, ajax_call_predict, ajax_call_generic } from "{% static 'ajax_interface.js' %}"
+
         var currentTicker = 'GOOG'; // global variable, to be accessed in every javascript function
 
         $(document).ready(function () {
