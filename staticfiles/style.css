@@ -80,3 +80,10 @@ button:hover {
 form {
 	margin-top: 15px;
 }
+
+#graph-area {
+	width: 80%;
+	/* Set the width to 80% of the page */
+	margin: 0 auto;
+	/* Center the canvas horizontally */
+}
