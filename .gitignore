@@ -2,3 +2,4 @@ proj_secrets/
 db.sqlite3
 __pycache__/
 productionfiles
+venv/
