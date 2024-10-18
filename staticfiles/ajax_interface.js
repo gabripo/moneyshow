@@ -1,4 +1,4 @@
-import { update_plot, show_text_below_canvas, toggle_lag_days_dropdown } from "./helper_functions.js";
+import { update_plot, show_text_below_canvas, toggle_lag_days_dropdown, is_json_response } from "./helper_functions.js";
 
 export function ajax_call_show(targetUrl, tickerText, checkboxVal, apiProvider, daysToDownload) {
     $.ajax({
@@ -11,8 +11,10 @@ export function ajax_call_show(targetUrl, tickerText, checkboxVal, apiProvider, 
             'days': daysToDownload,
         },
         success: function (res, status) {
-            if (targetUrl === "/get_stock_data/") {
+            if (is_json_response(res) && targetUrl === "/get_stock_data/") {
                 update_plot(res)
+            } else {
+                alert(res)
             }
         }
     });

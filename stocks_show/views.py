@@ -49,11 +49,12 @@ def get_stock_data(request):
             stockData = get_stock_from_db(tickerInput, daysToDownload)
         else:
             stockData = get_stock_from_api(tickerInput, apiName, daysToDownload)
-            if not is_valid_api_data(stockData):
-                print("Fall back to stock data, as data invalid from the APIs...")
-                stockData = get_default_stock_data(tickerInput)
-            elif not is_stock_in_db(tickerInput) or dbToUpdate:
-                write_data_to_db(tickerInput, stockData)
+
+        if not is_valid_api_data(stockData):
+            invalidStockNameMessage = f"Stock prices for symbol {tickerInput} could not be dowloaded.\n\nIs the symbol valid?\n\nAre you connected to internet?"
+            return HttpResponse(invalidStockNameMessage)
+        elif not is_stock_in_db(tickerInput) or dbToUpdate:
+            write_data_to_db(tickerInput, stockData)
 
         return HttpResponse(json.dumps(stockData), content_type="application/json")
     else:

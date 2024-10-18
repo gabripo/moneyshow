@@ -104,7 +104,7 @@
             // Right after the page is loaded, we get the stock data (default to GOOG) from the Django backend (the 'get_stock_data' function) for plotting
             var tickerText = 'GOOG'; // obtain the ticker string from the input textbox, requires jQuery
             var checkboxVal = '';
-            var apiProvider = 'database';
+            var apiProvider = 'yfinance';
             var targetUrl = "/get_stock_data/";
             var daysToDownload = 100;
 

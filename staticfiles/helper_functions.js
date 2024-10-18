@@ -132,6 +132,26 @@ export function update_plot(res) {
     });
 }
 
+export function is_json_response(response) {
+    if (typeof response !== "string") {
+        var value = JSON.stringify(response);
+    } else {
+        var value = response;
+    }
+
+    try {
+        value = JSON.parse(value);
+    } catch (error) {
+        return false;
+    }
+
+    if (typeof value === "object" && value !== null) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 export function format_data_priceseries(priceSeries, fieldName) {
     const dataFormatted = priceSeries.map(
         ({ date, [fieldName]: fieldValue }) =>

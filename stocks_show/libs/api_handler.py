@@ -26,7 +26,7 @@ def get_stock_from_api(
         stockDataDaily = api_yfinance_call(**apiOptions)
         stockData["prices"] = get_stock_timeseries_yfinance(stockDataDaily)
 
-    if stockData:
+    if apiName != "database" and stockData["prices"]:
         sort_stock_data_by_date(stockData)
     return stockData
 
