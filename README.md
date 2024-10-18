@@ -1,22 +1,21 @@
 # Interactive Stock Visualizer and Predictor
 
-This project allows you to search for stock prices using Alpha Vantage (API required) or Yahoo Finance, visualize the prices using Graph.js (candlestick plot), and perform predictions using Machine Learning techniques.
+This project allows you to search for stock prices, visualize the prices as candlestick plot and perform predictions using Machine Learning techniques.
 
-The web development framework used is Django.
+The web development framework used is [Django](https://www.djangoproject.com/).
 
-![image](https://github.com/user-attachments/assets/dba76d64-2a49-474e-b016-bc029b0ba334)
-
+![moneyshow_web_page](https://github.com/user-attachments/assets/711bfaa3-ae3d-4a39-94d4-b1d9fcb04d4b)
 
 ## Features
-- Search stock prices using [Alpha Vantage](https://www.alphavantage.co/) or [Yahoo Finance](https://finance.yahoo.com/)
-- Visualize stock prices with [Chart.js](https://www.chartjs.org/) candlestick plot
-- Perform stock price predictions with Machine Learning algorithms
-- Easy-to-use web interface built with Django
+- 🔎 Search stock prices using [Alpha Vantage](https://www.alphavantage.co/) or [Yahoo Finance](https://finance.yahoo.com/)
+- 📈 Interactive visualization of stock prices with [Chart.js](https://www.chartjs.org/) candlestick plot
+- 🔮 Perform stock price predictions with Machine Learning algorithms, using [Scikit-learn](https://scikit-learn.org/) and [XGBoost](https://xgboost.readthedocs.io)
+- 🌍 Easy-to-use web interface built with Django
 
 ## Requirements
-- Python 3.x
-- Alpha Vantage API key (if using Alpha Vantage for stock prices), get one [here](https://www.alphavantage.co/support/#api-key)
-- Required Python packages (listed in `requirements.txt`)
+- 🐍 Python 3.10
+- 🔑 Alpha Vantage API key (if using Alpha Vantage for stock prices), get one [here](https://www.alphavantage.co/support/#api-key)
+- 📦 Required Python packages, listed in `requirements.txt`
 
 ## Getting Started
 
