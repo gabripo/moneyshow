@@ -48,7 +48,7 @@ export function ajax_call_predict(targetUrl, tickerText, predictMethod, predicti
         },
         success: function (res, status) {
             update_plot(res)
-            alert("Prediction Completed!");
+            alert("Prediction Completed with method " + predictMethod);
 
             if (predictMethod === 'decisiontree' || predictMethod === 'randomforest') {
                 show_text_below_canvas("Decision trees, at their core, are designed to capture patterns in the feature space at a given point in time, without considering the sequence of data points. They split the data based on feature values, creating if-then-else rules, but they don't account for the order in which data points appear. Temporal dependencies are all about the order and progression of data points. Think of it like this: a decision tree is like taking snapshots of moments and trying to piece them together, whereas time series models are more like watching a movie—they get the flow and progression of events. If the features are set to be the N delayed samples of the target timeseries, then the decision tree will follow the pattern defined by them - in the case of overfitting, the pattern will repeat as a multiple of N.")
