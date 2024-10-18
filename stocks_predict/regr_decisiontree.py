@@ -39,7 +39,7 @@ def predictor_decisiontree(
             nDaysToPredict,
             useCrossValidation,
         )
-        print(f"Prediction of {key} for the following {nDaysToPredict} concluded!")
+        print(f"Prediction of {key} for the following {nDaysToPredict} days concluded!")
 
     if appendToInitDf:
         data["index"] = np.arange(nDatesAvailable)  # needed to append values afterwards
