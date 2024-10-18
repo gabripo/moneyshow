@@ -7,6 +7,7 @@ from stocks_predict.common_regr import (
     timeshift_pandaseries_remove_lags,
     timeshift_pandaseries_to_dataframe,
 )
+from stocks_predict.constants import CROSS_VALIDATION_SETS
 from stocks_predict.regr_linear import (
     build_pipeline,
     initialize_prediction_df,
@@ -54,7 +55,7 @@ def predict_day_element(
     nDaysToPredict: int,
     useCrossValidation=True,
 ) -> np.ndarray:
-    if useCrossValidation:
+    if useCrossValidation and len(y_train) > CROSS_VALIDATION_SETS:
         bestParams = model_best_parameters(RandomForestRegressor(), X_train, y_train)
     else:
         bestParams = {}  # default parameters will be used
@@ -70,7 +71,7 @@ def model_best_parameters(model, X: pd.DataFrame, y: pd.Series) -> dict:
     grid_search = RandomizedSearchCV(
         estimator=model,
         param_distributions=parametersGrid,
-        cv=5,
+        cv=CROSS_VALIDATION_SETS,
         scoring="neg_mean_squared_error",
         # verbose=10,
     )

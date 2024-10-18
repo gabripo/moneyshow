@@ -15,6 +15,9 @@ def forward_to_prediction(
     """
     stockDataFrame = convert_data_to_pandas_dataframe(stockData)
 
+    # the maximum number of lag days is the whole dataset less 1 day
+    predictionLagDays = min(len(stockDataFrame) - 1, predictionLagDays)
+
     predictorMapping = {
         "linear": predictor_linear,
         "decisiontree": predictor_decisiontree,
