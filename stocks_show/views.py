@@ -20,7 +20,6 @@ from stocks_show.libs.database_handling import (
     is_stock_in_db,
     write_data_to_db,
 )
-from stocks_show.libs.dummy_data import get_default_stock_data
 import json
 
 # making possible to load stock prices from the database instead of from the AlphaVantage APIs
