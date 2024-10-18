@@ -44,7 +44,7 @@ pip install -r requirements.txt
 
 ### 4. Configure API Keys
 
-If you're using Alpha Vantage, you'll need to configure your API key.
+If you're using Alpha Vantage, you'll need to configure your API key 🔑.
 - Create a folder named `proj_secrets` in the project root directory.
 - Create a `__init__.py` file in the created folder.
 - Add your Alpha Vantage API key into the `__init__.py` file:
@@ -64,10 +64,18 @@ python manage.py runserver
 
 ### 7. Search for a stock by symbol
 
-Insert the symbol (ticker) of the stock, then click on "Visualize Stock" to fetch its data.
+Insert the symbol (ticker) of the stock, then click on "Visualize Stock" to fetch and visualize its data 📈.
 
 ### 8. (Optional) Predict stock prices
 
-Select a prediction method from the dropdown menu, then click on "Predict".
+Select a prediction method from the dropdown menu, then click on "Predict" 🔮.
 
 Open your browser and navigate to http://127.0.0.1:8000 to access the application.
+
+## For the developers
+Checkout the repo, open it with Visual Studio Code: debug configurations are there.
+You know what to do.
+
+## Future extensions
+- Use [skforecast](https://skforecast.org) for time series prediction
+- Real-time data fetching
