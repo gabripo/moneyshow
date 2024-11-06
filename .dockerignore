@@ -1,0 +1,4 @@
+proj_secrets/
+__pycache__/
+productionfiles
+venv/
