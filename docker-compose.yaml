@@ -1,0 +1,19 @@
+services:
+  webapp:
+    build: .
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/code
+    depends_on:
+      - datadog
+  datadog:
+    image: gcr.io/datadoghq/agent:latest
+    container_name: dd-agent
+    environment:
+      - DD_API_KEY=a8c805c4208575e9e38b9bbe1359e34c
+      - DD_SITE=datadoghq.eu
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
