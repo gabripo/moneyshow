@@ -1,18 +1,23 @@
 services:
   webapp:
     build: .
+    command: ddtrace-run python app.py
     ports:
       - 8000:8000
     volumes:
       - .:/code
-    depends_on:
-      - datadog
   datadog:
     image: gcr.io/datadoghq/agent:latest
     container_name: dd-agent
+    links:
+      - webapp
     environment:
-      - DD_API_KEY=a8c805c4208575e9e38b9bbe1359e34c
-      - DD_SITE=datadoghq.eu
+      - DD_API_KEY=${DD_API_KEY}
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true # enables agent to receive custom metrics from other containers
+      - DD_APM_ENABLED=true # enables tracing
+      - DD_APM_NON_LOCAL_TRAFFIC=true # enables agent to receive traces from other containers
+      - DD_AGENT_HOST=dd-agent # allows web container to forward traces to agent
+      - DD_SITE=datadoghq.com # determines datadog instance to send data to (e.g change to datadoghq.eu for EU1)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc/:/host/proc/:ro

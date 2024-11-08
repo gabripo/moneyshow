@@ -2,6 +2,7 @@ proj_secrets/
 __pycache__/
 productionfiles
 venv/
+.env
 .gitignore
 *.sqlite3
 docker_build.sh
