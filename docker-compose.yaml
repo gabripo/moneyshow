@@ -1,7 +1,8 @@
 services:
   webapp:
     build: .
-    command: ddtrace-run python manage.py runserver 0.0.0.0:8000
+    container_name: moneyshow
+    command: ddtrace-run python manage.py runserver 0.0.0.0:8000 # command to run when starting the container
     ports:
       - 8000:8000
     volumes:
