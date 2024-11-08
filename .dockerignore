@@ -2,3 +2,10 @@ proj_secrets/
 __pycache__/
 productionfiles
 venv/
+.gitignore
+*.sqlite3
+docker_build.sh
+docker_run.sh
+docker-compose.yaml
+Dockerfile
+README.md
