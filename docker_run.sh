@@ -10,4 +10,4 @@ else
 fi
 
 echo "Link to the project homepage: http://0.0.0.0:$HOST_PORT"
-docker run -p $HOST_PORT:8000 -d docker-moneyshow
+docker run -p $HOST_PORT:8000 docker-moneyshow
