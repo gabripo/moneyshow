@@ -2,7 +2,7 @@
 
 This project allows you to search for stock prices, visualize the prices as candlestick plot and perform predictions using Machine Learning techniques.
 
-The web development framework used is [Django](https://www.djangoproject.com/).
+The web development framework used is [Django](https://www.djangoproject.com/) , the interface is in JavaScript and the [ChartJs](https://www.chartjs.org/) library.
 
 ![moneyshow_web_page](https://github.com/user-attachments/assets/711bfaa3-ae3d-4a39-94d4-b1d9fcb04d4b)
 
@@ -12,12 +12,36 @@ The web development framework used is [Django](https://www.djangoproject.com/).
 - 🔮 Perform stock price predictions with Machine Learning algorithms, using [Scikit-learn](https://scikit-learn.org/) and [XGBoost](https://xgboost.readthedocs.io)
 - 🌍 Easy-to-use web interface built with Django
 
-## Requirements
+## Getting Started
+
+## The Docker way
+Building and running a Docker container using the give `Dockerfile` file can be easily performed by using the available scripts:
+```bash
+chmod u+x docker_build.sh && chmod u+x docker_run.sh # give execution rights to the scripts for the current user
+./docker_build.sh && ./docker_run.sh
+```
+The application will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000) .
+
+## The Docker Compose way
+A [Datadog](https://www.datadoghq.com/) Agent is already configured to analyze the application.
+1. Place your precious API KEY in the `.env` file in the root directory of the project - example:
+```
+DD_API_KEY=__your_precious_beloved_datadog_api_key__
+```
+
+2. Starting the Docker Compose using the given `docker-compose.yaml` can be easily performed by using the available script:
+```bash
+chmod u+x dockercompose_up.sh # give execution rights to the script for the current user
+./dockercompose_up.sh
+```
+The application will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000) .
+The Datadog Agent traces will be available at [Datadog](https://app.datadoghq.eu).
+
+## The manual way
+### 0. Requirements
 - 🐍 Python 3.10
 - 🔑 Alpha Vantage API key (if using Alpha Vantage for stock prices), get one [here](https://www.alphavantage.co/support/#api-key)
 - 📦 Required Python packages, listed in `requirements.txt`
-
-## Getting Started
 
 ### 1. Clone the Repository
 ```bash
@@ -57,20 +81,23 @@ ALPHA_VANTAGE_API_KEY=your_api_key_here
 python manage.py migrate
 ```
 
-### 6. Start the Development Server
+### 6. Start the Django Server
 ```bash
 python manage.py runserver
 ```
 
-### 7. Search for a stock by symbol
+## Usage
+
+### 1. Search for a stock by symbol
 
 Insert the symbol (ticker) of the stock, then click on "Visualize Stock" to fetch and visualize its data 📈.
 
-### 8. (Optional) Predict stock prices
+You can zoom in the generated graph and reset the zoom with the "Reset Zoom" button above it.
+
+### 2. Predict stock prices
 
 Select a prediction method from the dropdown menu, then click on "Predict" 🔮.
 
-Open your browser and navigate to http://127.0.0.1:8000 to access the application.
 
 ## For the developers
 Checkout the repo, open it with Visual Studio Code: debug configurations are there.
